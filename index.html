@@ -131,6 +131,39 @@ ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;
 .need li{counter-increment:n;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--rust);border-radius:8px;padding:12px 14px;font-size:15px}
 .need li::before{content:counter(n) ". ";font-weight:600}
 
+.vtabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.vtabs button{font:500 14px/1 var(--font-body);padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;display:flex;gap:8px;align-items:center}
+.vtabs button i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.vtabs button[aria-selected="true"]{background:var(--ink);color:var(--stone);border-color:var(--ink)}
+.vtabs button small{font-size:11px;opacity:.75}
+.vhead{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.vhead h3{font:600 26px/1.15 var(--font-display);margin:0}
+.vhead .kind{font:600 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.vmeta{display:flex;gap:16px;align-items:center;font-size:14px;color:var(--muted)}
+.vmeta strong{font:600 22px/1 var(--font-display);color:var(--ink)}
+.vrec{font:600 12px/1 var(--font-body);padding:7px 10px;border-radius:999px;background:var(--rust);color:#fff}
+.videa{max-width:70ch;margin:0 0 14px;font-size:16px}
+.vhero button,.vfurn button{all:unset;cursor:zoom-in;display:block;border-radius:10px;overflow:hidden;background:var(--night)}
+.vhero img{width:100%;aspect-ratio:16/10;object-fit:cover}
+.vfurn{margin-top:14px}
+.vfurn img{width:100%;aspect-ratio:1280/398;object-fit:cover}
+.items{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:10px}
+@media (max-width:900px){.items{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.item{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;display:grid;gap:3px;align-content:start}
+.item b{font-size:14px}
+.item span{color:var(--muted)}
+.item em{font-style:normal;font-weight:600;font-variant-numeric:tabular-nums}
+.vbottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media (max-width:760px){.vbottom{grid-template-columns:1fr}}
+.vbox{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;font-size:15px}
+.vbox h4{margin:0 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bar{display:flex;height:36px;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13px}
+.legend span{display:flex;gap:6px;align-items:center}
+.legend i{width:12px;height:12px;border-radius:3px;border:1px solid var(--line)}
+.vbox ul{margin:0;padding-left:18px;display:grid;gap:4px}
+
 footer{padding:56px 0 64px;color:var(--muted);font-size:13px}
 footer p{max-width:80ch;margin:0 0 6px}
 
@@ -160,9 +193,9 @@ dialog button{position:fixed;top:14px;right:16px;font:500 14px/1 var(--font-body
   <div class="wrap">
     <a href="#summary">Коротко</a>
     <a href="#model">3D-модель</a>
-    <a href="#renders">Визуализации</a>
+    <a href="#variants">Варианты дизайна</a>
+    <a href="#renders">Визуализации зон</a>
     <a href="#route">Маршрут</a>
-    <a href="#ideas">Идеи</a>
     <a href="#refs">Референсы</a>
     <a href="#next">Что нужно решить</a>
   </div>
@@ -177,7 +210,7 @@ dialog button{position:fixed;top:14px;right:16px;font:500 14px/1 var(--font-body
     <div class="sum"><b>2</b><span>направления визуально проработаны: «Базовый лагерь» и «Топография»</span></div>
     <div class="sum"><b>9</b><span>рендеров ключевых зон: вход, №1 касса, №5 обувь, №7 одежда</span></div>
     <div class="sum"><b>3D</b><span>интерактивная модель первого этажа, открывается в браузере и на телефоне</span></div>
-    <div class="sum"><b>4</b><span>идеи концепции с оценкой по 10 критериям и рекомендацией</span></div>
+    <div class="sum"><b>4</b><span>варианта дизайна: рендер зала обуви, линейка мебели, цвета, оценка и рекомендация</span></div>
   </div>
 </section>
 
@@ -191,9 +224,29 @@ dialog button{position:fixed;top:14px;right:16px;font:500 14px/1 var(--font-body
   </div>
 </section>
 
+<section id="variants">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Варианты дизайна</h2></div>
+  <p class="sub">Четыре направления на одном и том же зале №5 «Обувь»: Г-стенд, лавка, горка для примерки, чёрный мрамор. Меняется идея, материалы и мебель. Рендеры Blender, комната условная (≈6,4 × 4,6 м, высота 2,95 м), до обмера.</p>
+  <div class="vtabs" role="tablist" aria-label="Вариант дизайна" id="vtabs"></div>
+  <div id="vpanel"></div>
+  <div class="reco">
+    <small>Рекомендация</small>
+    <b>«Вторая высота» как основа, «Кора» как главная идея</b>
+    <p>Материалы и система сети из «Второй высоты»: реально, узнаваемо и укладывается в бюджет. Поверх неё петля-маршрут и одна линия навигации и света из «Коры». Из «Хранилища» берём «зал героев» в мраморной части, из «Лаборатории» бирки «Проверено» и горку для примерки.</p>
+  </div>
+  <div class="principles">
+    <div class="pr"><b>Маршрут-петля</b>От входа вглубь, «вершина» в №5, назад через одежду к кассе.</div>
+    <div class="pr"><b>Одна линия на одной высоте</b>Сквозной профиль через все залы: рейка, свет и навигация сразу.</div>
+    <div class="pr"><b>Доказательство вместо декора</b>Бирка «Проверено» на топ-моделях: кто, где, сколько. Данные только от команды.</div>
+    <div class="pr"><b>Мрамор банка главный</b>Стены матовые и спокойнее пола. №5–№8 становятся «залом героев».</div>
+    <div class="pr"><b>Сезон за одну ночь</b>Около трети оборудования мобильное: острова на колёсах и сменные кассеты.</div>
+    <div class="pr"><b>Тишина и свет</b>Акустические вставки в потолке против эха. Свет на товар с CRI от 90.</div>
+  </div>
+</section>
+
 <section id="renders">
-  <div class="sec-head"><span class="sec-num">03</span><h2>Визуализации</h2></div>
-  <p class="sub">Одна и та же планировка в двух направлениях. Чёрный мрамор банка сохранён в обоих.</p>
+  <div class="sec-head"><span class="sec-num">04</span><h2>Визуализации зон</h2></div>
+  <p class="sub">Первый раунд: вся планировка в двух направлениях, вход, касса, обувь и одежда. «Базовый лагерь» потом вырос во «Вторую высоту», мотив «Топографии» стал линией «Коры».</p>
   <div class="concepts">
     <div class="concept">
       <div class="tag">Направление 01</div>
@@ -216,7 +269,7 @@ dialog button{position:fixed;top:14px;right:16px;font:500 14px/1 var(--font-body
 </section>
 
 <section id="route">
-  <div class="sec-head"><span class="sec-num">04</span><h2>Маршрут покупателя</h2></div>
+  <div class="sec-head"><span class="sec-num">05</span><h2>Маршрут покупателя</h2></div>
   <p class="sub">Петля без тупиков: от входа вглубь к обуви и горке, обратно через одежду и к кассе у выхода. Двое продавцов видят все ключевые точки.</p>
   <div class="route">
     <figure><img src="img/route_plan.png" alt="План первого этажа с маршрутом покупателя от 1 до 8" loading="lazy" width="1004" height="1250"><figcaption>Схема, не в масштабе. Номера комнат по техпаспорту.</figcaption></figure>
@@ -233,33 +286,7 @@ dialog button{position:fixed;top:14px;right:16px;font:500 14px/1 var(--font-body
   </div>
 </section>
 
-<section id="ideas">
-  <div class="sec-head"><span class="sec-num">05</span><h2>Четыре идеи концепции</h2></div>
-  <p class="sub">Второй раунд, 7 ноября. Каждое направление вырастает из одной мысли о том, чем должен быть этот магазин. Оценка по 10 критериям, максимум 50. Это мнение дизайнера, его нужно проверить на команде.</p>
-  <div class="ideas">
-    <article class="idea"><div class="top" style="background:#17181A;color:#EDE8DF"><small>TIMELESS</small><b>Хранилище</b></div>
-      <div class="body"><span>Банк как хранилище проверенного снаряжения. Дуб, известь, мрамор, тишина.</span><span class="score"><strong>36</strong> / 50</span><span class="risk">Риск: может показаться дорогим и закрытым.</span></div></article>
-    <article class="idea"><div class="top" style="background:#2D46C8;color:#fff"><small>FUTURE ICONIC</small><b>Кора</b></div>
-      <div class="body"><span>Кора — это обход вокруг горы. Одна светящаяся линия ведёт покупателя через все залы.</span><span class="score"><strong>42</strong> / 50</span><span class="risk">Риск: сложный и дорогой монтаж, строить только после обмера.</span></div></article>
-    <article class="idea"><div class="top" style="background:#D3D4CF;color:#1F2123"><small>RADICAL</small><b>Полевая лаборатория</b></div>
-      <div class="body"><span>Доказательство вместо обещания. Сетка, светящиеся стены, станции для тестов снаряжения.</span><span class="score"><strong>37</strong> / 50</span><span class="risk">Риск: может выглядеть как склад.</span></div></article>
-    <article class="idea rec"><div class="top" style="background:#D8B98A;color:#1F2123"><small>СИНТЕЗ</small><b>Вторая высота</b></div>
-      <div class="body"><span>Язык вашей сети, поднятый на уровень выше. Те же материалы, но спокойнее и цельнее.</span><span class="score"><strong>37</strong> / 50</span><span class="risk">Риск: «то же, что было».</span></div></article>
-  </div>
-  <div class="reco">
-    <small>Рекомендация</small>
-    <b>«Вторая высота» как основа, «Кора» как главная идея</b>
-    <p>Материалы и система сети из «Второй высоты»: реально, узнаваемо и укладывается в бюджет. Поверх неё петля-маршрут и одна линия навигации и света из «Коры». Из «Хранилища» берём «зал героев» в мраморной части, из «Лаборатории» бирки «Проверено» и горку для примерки.</p>
-  </div>
-  <div class="principles">
-    <div class="pr"><b>Маршрут-петля</b>От входа вглубь, «вершина» в №5, назад через одежду к кассе.</div>
-    <div class="pr"><b>Одна линия на одной высоте</b>Сквозной профиль через все залы: рейка, свет и навигация сразу.</div>
-    <div class="pr"><b>Доказательство вместо декора</b>Бирка «Проверено» на топ-моделях: кто, где, сколько. Данные только от команды.</div>
-    <div class="pr"><b>Мрамор банка главный</b>Стены матовые и спокойнее пола. №5–№8 становятся «залом героев».</div>
-    <div class="pr"><b>Сезон за одну ночь</b>Около трети оборудования мобильное: острова на колёсах и сменные кассеты.</div>
-    <div class="pr"><b>Тишина и свет</b>Акустические вставки в потолке против эха. Свет на товар с CRI от 90.</div>
-  </div>
-</section>
+
 
 <section id="refs">
   <div class="sec-head"><span class="sec-num">06</span><h2>Референсы</h2></div>
@@ -336,6 +363,53 @@ function showGallery(c){
 }
 document.querySelectorAll(".switch button").forEach(b => b.addEventListener("click", () => showGallery(b.dataset.c)));
 showGallery("c1");
+const VARIANTS = [
+ {id:"vault", name:"Хранилище", kind:"Timeless", color:"#17181A", score:36,
+  idea:"Банк как хранилище проверенного снаряжения. Дубовые ячейки-«сейфы» с подсветкой, известковые стены, мрамор и тишина. Банковская часть становится «залом героев».",
+  items:[["Касса-витрина","Дуб, стекло, зелёная кожа","≈1,8 × 0,6 × 1,0 м"],["Модуль «сейф»","Дубовые ячейки с подсветкой","≈1,2 × 0,4 м"],["Лавка","Дуб, зелёная обивка","≈1,7 × 0,45 × 0,45 м"],["Горка","Дубовая рама, речная галька","≈2,0 × 0,6 м"],["Витрина-остров","Дубовый стол и стальная рейка","≈1,6 × 0,6 × 1,8 м"],["Примерочная","Дубовая дверь вместо шторы","≈1,05 × 1,05 × 2,3 м"]],
+  palette:[["Известь","#E6E0D4",45],["Мрамор","#1A1B1D",25],["Дуб","#8A6A47",20],["Сталь","#2E3033",7],["Зелёный","#2F4A3F",3]],
+  plus:["Тихо и дорого, долго не устареет","Мрамор банка работает на образ"],
+  minus:["Может показаться закрытым и дорогим","Ячейки вмещают меньше пар, чем открытые полки"]},
+ {id:"kora", name:"Кора", kind:"Future iconic", color:"#2D46C8", score:42,
+  idea:"Кора — это обход вокруг горы. Одна светящаяся алюминиевая линия на высоте ≈1,35 м проходит через все залы: на ней полки, свет и навигация. Залы пронумерованы как станции маршрута.",
+  items:[["Касса","Ясень, алюминиевая столешница, линия проходит сквозь кассу","≈1,8 × 0,6 × 1,0 м"],["Стена «линия»","Профиль со светом, алюминиевые полки, низкие ящики","модуль 1,2 м"],["Лавка","Ясень на тонких алюминиевых опорах","≈1,7 × 0,42 × 0,45 м"],["Горка «перевал»","Серый резиновый настил, синяя кромка","≈2,0 × 0,6 м"],["Рейка-линия","Отдельно стоящая, тот же профиль со светом","≈1,6 × 0,4 × 1,42 м"],["Примерочная","Светлая кабина, серая штора, номер станции","≈1,05 × 1,05 × 2,3 м"]],
+  palette:[["Известняк","#E9E6DF",55],["Мрамор","#1A1B1D",22],["Алюминий","#B8BBBE",10],["Графит","#2A2D31",10],["Ультрамарин","#2D46C8",3]],
+  plus:["Самая сильная и узнаваемая идея","Маршрут и навигация встроены в мебель"],
+  minus:["Сложный и дорогой монтаж","Строить только после обмера"]},
+ {id:"lab", name:"Полевая лаборатория", kind:"Radical", color:"#E2501A", score:37,
+  idea:"Доказательство вместо обещания. Перфорированная сетка на стенах, световые короба, станции для тестов. Каждая зона подписана как станция с проверкой снаряжения.",
+  items:[["Касса-верстак","Берёзовая столешница, оранжевый фасад","≈1,8 × 0,7 × 1,0 м"],["Модуль «сетка»","Перфорированный металл, световой короб сверху","модуль 1,2 м"],["Лавка","Графит на металлической опоре","≈1,7 × 0,4 × 0,45 м"],["Горка-станция","Оранжевая рама, рифлёный настил","≈2,0 × 0,6 м"],["Мобильная стойка","На колёсах, для сезона","≈1,4 × 0,5 × 1,5 м"],["Примерочная","Светлый короб, графитовая штора","≈1,05 × 1,05 × 2,3 м"]],
+  palette:[["Сетка и сталь","#A7ABAD",35],["Бетонный серый","#CFD0CB",25],["Мрамор","#1A1B1D",22],["Поликарбонат","#E6ECEE",12],["Оранжевый","#F2541B",6]],
+  plus:["Сильнее всего говорит о проверке и экспертизе","Легко менять под сезон"],
+  minus:["Может выглядеть как склад","Холоднее остальных"]},
+ {id:"second", name:"Вторая высота", kind:"Синтез", color:"#B5322B", score:37, rec:true,
+  idea:"Язык вашей сети, поднятый на уровень выше: фанера с треугольной перфорацией, чёрные рейки, брусовая лавка, каменная горка. Те же материалы, но спокойнее и цельнее, плюс витрина «Проверено».",
+  items:[["Касса из брусьев","Дубовые брусья, графитовая столешница","≈1,8 × 0,6 × 1,0 м"],["Модуль стены","Фанера 0,6 м с треугольной перфорацией, чёрные рейки","модуль 1,2 м"],["Лавка из брусьев","Как в нынешнем магазине","≈1,7 × 0,46 × 0,44 м"],["Каменная горка","Красная стальная рама, галька","≈2,0 × 0,6 м"],["Реечная панель","Фанера и графитовая рейка для одежды","≈1,5 × 0,35 × 2,2 м"],["Примерочная","Лесной зелёный, красная штора","≈1,05 × 1,05 × 2,3 м"]],
+  palette:[["Фанера","#D8B98A",40],["Белые стены","#F1EEE8",25],["Мрамор","#1A1B1D",22],["Графит","#2B2D30",8],["Красный","#B5322B",3],["Лесной","#3E5243",2]],
+  plus:["Узнаваемо для покупателей сети","Реально и в бюджете"],
+  minus:["Риск «то же, что было»","Нужна линия из «Коры», чтобы был шаг вперёд"]}
+];
+function showVariant(id){
+  const v=VARIANTS.find(x=>x.id===id);
+  document.querySelectorAll("#vtabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.v===id?"true":"false"));
+  document.getElementById("vpanel").innerHTML=`
+   <div class="vhead"><div><div class="kind">${esc(v.kind)}</div><h3>${esc(v.name)}</h3></div>
+     <div class="vmeta">${v.rec?'<span class="vrec">Рекомендуемая основа</span>':''}<span><strong>${v.score}</strong> / 50</span></div></div>
+   <p class="videa">${esc(v.idea)}</p>
+   <div class="vhero"><button type="button" data-src="img/v_${v.id}_hero.jpg" data-cap="${esc(v.name+'. Зал №5 «Обувь»')}" aria-label="Увеличить: ${esc(v.name)}, зал обуви"><img src="img/v_${v.id}_hero.jpg" alt="${esc(v.name)}: зал №5 «Обувь» с Г-стендом, лавкой и горкой" width="1280" height="800"></button></div>
+   <div class="vfurn"><button type="button" data-src="img/v_${v.id}_furn.jpg" data-cap="${esc(v.name+'. Мебель и оборудование')}" aria-label="Увеличить: мебель ${esc(v.name)}"><img src="img/v_${v.id}_furn.jpg" alt="Линейка мебели: касса, модуль стены, лавка, горка, рейка, примерочная" loading="lazy" width="1280" height="398"></button>
+     <div class="items">${v.items.map((it,i)=>`<div class="item"><b>${String(i+1).padStart(2,"0")} · ${esc(it[0])}</b><span>${esc(it[1])}</span><em>${esc(it[2])}</em></div>`).join("")}</div></div>
+   <div class="vbottom">
+     <div class="vbox"><h4>Цвета: доля в пространстве</h4>
+       <div class="bar">${v.palette.map(p=>`<div style="flex:${p[2]} 1 0;background:${p[1]}" title="${esc(p[0])} ${p[2]}%"></div>`).join("")}</div>
+       <div class="legend">${v.palette.map(p=>`<span><i style="background:${p[1]}"></i>${esc(p[0])} ${p[2]}%</span>`).join("")}</div></div>
+     <div class="vbox"><h4>Плюсы и риски</h4><ul>${v.plus.map(x=>`<li>${esc(x)}</li>`).join("")}${v.minus.map(x=>`<li style="color:var(--muted)">${esc(x)}</li>`).join("")}</ul></div>
+   </div>`;
+}
+document.getElementById("vtabs").innerHTML=VARIANTS.map(v=>`<button type="button" role="tab" data-v="${v.id}" aria-selected="false"><i style="background:${v.color}"></i>${esc(v.name)}${v.rec?' <small>рекомендуем</small>':''}</button>`).join("");
+document.querySelectorAll("#vtabs button").forEach(b=>b.addEventListener("click",()=>showVariant(b.dataset.v)));
+showVariant("second");
+
 document.getElementById("refs-grid").innerHTML = REFS.map(fig).join("");
 
 const lb = document.getElementById("lb");
