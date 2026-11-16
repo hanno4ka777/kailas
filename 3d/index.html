@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Кайлас · 3D-модель магазина</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#F1EFEA;--sub:#B9B6AE;--bg:#1C1D1F;--panel:rgba(28,29,31,.88);--line:#3A3B3E;--acc:#E0662B}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;overflow:hidden;touch-action:none}
+  #c{position:fixed;inset:0;display:block;width:100%;height:100%}
+  .top{position:fixed;left:12px;top:12px;right:12px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;pointer-events:none}
+  .top>*{pointer-events:auto}
+  .title{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+  .title b{display:block;font-size:15px;font-weight:800}
+  .title span{font-size:12px;color:var(--sub)}
+  .seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px}
+  button{font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:8px;padding:10px 12px;min-height:44px;cursor:pointer;white-space:nowrap}
+  button:hover{background:#2C2D30}
+  button[aria-pressed="true"]{background:var(--acc);color:#fff}
+  .bar{position:fixed;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+  .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .row>*{pointer-events:auto}
+  .rooms{display:flex;gap:4px;overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;max-width:100%}
+  .tools{display:flex;gap:4px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 8px}
+  .tools label{font-size:12px;color:var(--sub);display:flex;align-items:center;gap:8px;padding:0 6px}
+  input[type=range]{width:120px;accent-color:var(--acc)}
+  .zoom{position:fixed;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px}
+  .zoom button{font-size:20px;width:48px}
+  #load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--bg);font-size:14px;color:var(--sub);transition:opacity .4s}
+  #load .p{width:220px;height:4px;background:#333;border-radius:2px;overflow:hidden}
+  #load .p i{display:block;height:100%;width:0;background:var(--acc)}
+  .note{font-size:11px;color:var(--sub);text-align:center;background:var(--panel);border-radius:8px;padding:6px 10px;border:1px solid var(--line)}
+  .hint{position:fixed;left:50%;top:84px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--sub);transition:opacity .6s;pointer-events:none;text-align:center}
+  @media (max-width:640px){.title span{display:none} input[type=range]{width:90px} .zoom{top:150px;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="3D-модель магазина Кайлас"></canvas>
+<div class="top">
+  <div class="title"><b><a href="../" style="color:inherit;text-decoration:none">← Кайлас · 3D-модель</a></b><span>Антоновича, 122 · концепт, не рабочий чертёж</span></div>
+  <div class="seg" role="group" aria-label="Концепция">
+    <button id="cc1" aria-pressed="true">01 Базовый лагерь</button>
+    <button id="cc2" aria-pressed="false">02 Топография</button>
+  </div>
+</div>
+<div class="hint" id="hint">Мышь: тянуть — вращать, колесо — приблизить · Телефон: один палец — вращать, два — приблизить и сдвинуть</div>
+<div class="zoom" aria-label="Масштаб">
+  <button id="zin" aria-label="Приблизить">+</button>
+  <button id="zout" aria-label="Отдалить">−</button>
+  <button id="zreset" aria-label="Сбросить вид" style="font-size:13px">⟲</button>
+</div>
+<div class="bar">
+  <div class="row"><div class="rooms" id="rooms" role="group" aria-label="Комнаты"></div></div>
+  <div class="row">
+    <div class="tools">
+      <button id="tIn" aria-pressed="false">Вид изнутри</button>
+      <button id="tCeil" aria-pressed="false">Потолок</button>
+      <label for="hcut">Высота стен <input id="hcut" type="range" min="0.9" max="3.0" step="0.05" value="3.0"></label>
+    </div>
+  </div>
+  <div class="row"><div class="note">Размеры мебели ориентировочные, до обмера · товар условный · материалы упрощены (рендеры отдельно)</div></div>
+</div>
+<div id="load"><div>Загружаю модель…</div><div class="p"><i id="pb"></i></div></div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
+const canvas=document.getElementById('c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+renderer.localClippingEnabled=true;
+const scene=new THREE.Scene(); scene.background=new THREE.Color('#1C1D1F');
+const camera=new THREE.PerspectiveCamera(50,1,0.05,200);
+const controls=new OrbitControls(camera,canvas);
+controls.enableDamping=true; controls.dampingFactor=0.08; controls.screenSpacePanning=true;
+controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
+
+// light
+scene.add(new THREE.HemisphereLight(0xfff4e6,0x2a2622,1.6));
+const sun=new THREE.DirectionalLight(0xffffff,1.4); sun.position.set(6,14,8); scene.add(sun);
+const fill=new THREE.DirectionalLight(0xffe6cc,0.6); fill.position.set(-8,6,-6); scene.add(fill);
+
+// Blender (x,y,z) -> three (x, z, -y)
+const B=(x,y,z=0)=>new THREE.Vector3(x,z,-y);
+const ROOMS=[
+  {id:'all',name:'Обзор'},
+  {id:'entry',name:'Вход',c:[3.45,-6.55],look:[1.6,-2.4]},
+  {id:'r1',name:'№1 Каса',c:[3.9,-5.0],look:[1.0,-2.6]},
+  {id:'r5',name:'№5 Обувь',c:[-1.75,-4.6],look:[-3.1,1.4]},
+  {id:'r7',name:'№7 Одежда',c:[-6.58,-1.8],look:[-6.58,2.3]},
+  {id:'r4',name:'№4 Альпинизм',c:[-0.25,1.0],look:[2.5,0.6]},
+  {id:'r2',name:'№2',c:[6.5,-4.8],look:[6.5,-2.0]},
+  {id:'r6',name:'№6',c:[-2.0,-9.6],look:[-6.5,-6.0]},
+  {id:'r3',name:'№3',c:[6.8,-9.9],look:[6.8,-6.5]},
+];
+const CENTER=B(0,-2.5,0);
+let mode='orbit', current='all';
+const ceilings=[]; const allMats=new Set();
+const clip=new THREE.Plane(new THREE.Vector3(0,-1,0),3.0);
+
+function setOverview(){
+  camera.fov=innerWidth<innerHeight?68:50; camera.updateProjectionMatrix();
+  controls.enableZoom=true; controls.enablePan=true; controls.minDistance=2; controls.maxDistance=60;
+  controls.maxPolarAngle=Math.PI*0.49;
+  const k=camera.aspect<1?1.9:1.0; camera.position.copy(CENTER).add(new THREE.Vector3(9*k,15*k,13*k)); controls.target.copy(CENTER); controls.update();
+}
+function goRoom(r){
+  current=r.id; markRooms();
+  if(r.id==='all'){ if(mode==='inside') toggleInside(false); setOverview(); return; }
+  const look=B(r.look[0],r.look[1],1.2);
+  if(mode==='inside'){
+    const eye=B(r.c[0],r.c[1],1.6);
+    const dir=look.clone().sub(eye).normalize();
+    controls.target.copy(eye.clone().add(dir.multiplyScalar(0.3)));
+    camera.position.copy(eye); controls.update(); return;
+  }
+  const c=B((r.c[0]+r.look[0])/2,(r.c[1]+r.look[1])/2,0.8);
+  const off=B(r.c[0],r.c[1],0).sub(B(r.look[0],r.look[1],0)).normalize().multiplyScalar(5);
+  camera.position.copy(c).add(new THREE.Vector3(off.x,7.5,off.z)); controls.target.copy(c); controls.update();
+}
+function toggleInside(on){
+  mode=on?'inside':'orbit'; document.getElementById('tIn').setAttribute('aria-pressed',on);
+  if(on){
+    setCeil(true);
+    controls.enableZoom=false; controls.enablePan=false; controls.minDistance=0; controls.maxDistance=1; controls.maxPolarAngle=Math.PI*0.85;
+    controls.rotateSpeed=0.5;
+    const r=ROOMS.find(x=>x.id===current&&x.c)||ROOMS.find(x=>x.id==='r5'); goRoom(r);
+  } else { controls.rotateSpeed=1; setOverview(); markRooms(); }
+}
+let ceilOn=false;
+function setCeil(on){ ceilOn=on; ceilings.forEach(m=>m.visible=on); document.getElementById('tCeil').setAttribute('aria-pressed',on); }
+
+const roomsEl=document.getElementById('rooms');
+ROOMS.forEach(r=>{const b=document.createElement('button'); b.textContent=r.name; b.dataset.id=r.id; b.addEventListener('click',()=>goRoom(r)); roomsEl.appendChild(b);});
+function markRooms(){ roomsEl.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===current)); }
+document.getElementById('tIn').addEventListener('click',()=>toggleInside(mode!=='inside'));
+document.getElementById('tCeil').addEventListener('click',()=>setCeil(!ceilOn));
+document.getElementById('hcut').addEventListener('input',e=>{clip.constant=parseFloat(e.target.value);});
+const zoomBy=f=>{ if(mode==='inside'){camera.fov=THREE.MathUtils.clamp(camera.fov*f,25,90);camera.updateProjectionMatrix();return;}
+  const v=camera.position.clone().sub(controls.target).multiplyScalar(f); camera.position.copy(controls.target).add(v); controls.update(); };
+document.getElementById('zin').addEventListener('click',()=>zoomBy(0.8));
+document.getElementById('zout').addEventListener('click',()=>zoomBy(1.25));
+document.getElementById('zreset').addEventListener('click',()=>{camera.fov=innerWidth<innerHeight?68:50;camera.updateProjectionMatrix(); goRoom(ROOMS.find(r=>r.id===current)||ROOMS[0]);});
+
+// models
+const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); const cache={}; let active=null; let token=0;
+const pb=document.getElementById('pb'), loadEl=document.getElementById('load');
+function prep(root){
+  root.traverse(o=>{
+    if(!o.isMesh) return;
+    const n=(o.name||'')+' '+(o.parent?o.parent.name:'');
+    if(/CEILING|RENDER_CEILING|^track|_head/i.test(o.name)||/CEILING/i.test(n)) ceilings.push(o);
+    const ms=Array.isArray(o.material)?o.material:[o.material];
+    ms.forEach(m=>{ if(/mirror/i.test(m.name)){m.metalness=0.0;m.roughness=0.15;m.color.set('#8d969b');} m.clippingPlanes=[clip]; m.clipShadows=true; if(m.transmission>0){m.transparent=true;m.opacity=0.25;m.transmission=0;m.depthWrite=false;} allMats.add(m); });
+  });
+}
+function load(c){
+  const my=++token;
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.id==='cc'+c.slice(1)));
+  if(active){scene.remove(active);}
+  if(cache[c]){active=cache[c];scene.add(active);ceilings.length=0;prep(active);setCeil(ceilOn||mode==='inside');loadEl.style.display='none';return;}
+  loadEl.style.display='flex'; loadEl.style.opacity=1; pb.style.width='35%';
+  loader.load(`./kailas_${c.toLowerCase()}.glb`,g=>{
+    cache[c]=g.scene; if(my!==token) return; active=g.scene; ceilings.length=0; prep(active); scene.add(active); setCeil(ceilOn||mode==='inside');
+    loadEl.style.opacity=0; setTimeout(()=>loadEl.style.display='none',400);
+  },ev=>{ if(ev.total) pb.style.width=Math.round(ev.loaded/ev.total*100)+'%'; },err=>{ loadEl.querySelector('div').textContent='Не удалось загрузить модель'; console.error(err); });
+}
+document.getElementById('cc1').addEventListener('click',()=>{scene.background.set('#1C1D1F');load('C1');});
+document.getElementById('cc2').addEventListener('click',()=>{scene.background.set('#141517');load('C2');});
+
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?68:50;camera.updateProjectionMatrix();}
+addEventListener('resize',resize); resize();
+setOverview(); markRooms(); load('C1');
+setTimeout(()=>{document.getElementById('hint').style.opacity=0},6000);
+renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera);});
+</script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кайлас · отчёт по дизайну</title>
+<meta name="description" content="Магазин на Антоновича, 122: 3D-модель, визуализации, маршрут покупателя, направления дизайна и референсы.">
+<meta property="og:title" content="Кайлас · отчёт по дизайну">
+<meta property="og:description" content="3D-модель, визуализации и направления дизайна магазина на Антоновича, 122.">
+<meta property="og:image" content="img/c1_r5.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Камень и графит: светлый фон, тёмные блоки для 3D, сланцево-синий акцент, горизонтали рельефа в шапке */
+  --stone:#EDF0F1; --card:#F8FAFA; --ink:#18212B; --muted:#56626E; --slate:#35587A; --line:#CDD5DB; --night:#1C1D1F;
+  --rust:#C9471F;
+  --font-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --font-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--stone);color:var(--ink);font:400 16px/1.6 var(--font-body)}
+a{color:var(--slate)}
+:focus-visible{outline:2px solid var(--slate);outline-offset:2px}
+img{max-width:100%;display:block}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+header.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+header.hero canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.6}
+.hero .wrap{position:relative;padding:56px 20px 40px}
+.eyebrow{font:600 12px/1.4 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+h1{font:600 clamp(36px,6vw,64px)/1.03 var(--font-display);margin:10px 0 14px;letter-spacing:-.01em;text-wrap:balance}
+.lead{max-width:60ch;font-size:18px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{font:500 13px/1 var(--font-body);padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
+.chip.accent{background:var(--ink);color:var(--stone);border-color:var(--ink)}
+
+nav.toc{position:sticky;top:0;z-index:10;background:var(--stone);border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:2px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--ink);font-weight:500;font-size:14px;padding:6px 10px;border-radius:6px}
+nav.toc a:hover{background:var(--card)}
+
+section{padding:56px 0 8px}
+.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:8px}
+.sec-num{font:600 14px/1 var(--font-display);color:var(--rust);min-width:28px}
+h2{font:600 clamp(22px,3vw,30px)/1.2 var(--font-display);margin:0;text-wrap:balance}
+.sub{color:var(--muted);max-width:68ch;margin:0 0 22px 44px}
+@media (max-width:600px){.sub{margin-left:0}}
+h3{font-size:18px;margin:0 0 6px;font-weight:600}
+
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.sum b{display:block;font:600 26px/1.1 var(--font-display);color:var(--slate);margin-bottom:6px;font-variant-numeric:tabular-nums}
+.sum span{font-size:15px}
+
+.viewer{background:var(--night);border-radius:12px;overflow:hidden;position:relative;aspect-ratio:16/9;min-height:420px}
+.viewer iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.under{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;font-size:14px;color:var(--muted)}
+.btn{display:inline-block;font:500 14px/1 var(--font-body);padding:11px 16px;border-radius:8px;background:var(--ink);color:var(--stone);text-decoration:none;border:0;cursor:pointer}
+@media (max-width:700px){.viewer{aspect-ratio:auto;height:72vh}}
+
+.concepts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:22px}
+@media (max-width:760px){.concepts{grid-template-columns:1fr}}
+.concept{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+.concept .tag{font:600 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.concept h3{font:600 22px/1.2 var(--font-display);margin:8px 0}
+.concept p{margin:0;font-size:15px}
+.swatches{display:flex;gap:6px;margin-top:12px}
+.swatches i{width:28px;height:28px;border-radius:6px;border:1px solid var(--line)}
+
+.switch{display:inline-flex;gap:4px;padding:4px;border-radius:10px;background:var(--card);border:1px solid var(--line);margin-bottom:14px}
+.switch button{font:500 14px/1 var(--font-body);padding:10px 14px;border-radius:7px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.switch button[aria-pressed="true"]{background:var(--ink);color:var(--stone)}
+.gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:700px){.gallery{grid-template-columns:1fr}}
+figure{margin:0}
+.gallery figure button{all:unset;cursor:zoom-in;display:block;border-radius:10px;overflow:hidden;background:var(--night)}
+.gallery figure button:focus-visible{outline:2px solid var(--slate);outline-offset:2px}
+.gallery img{width:100%;aspect-ratio:16/10;object-fit:cover}
+figcaption{font-size:14px;margin-top:8px;color:var(--muted)}
+figcaption b{color:var(--ink);font-weight:600}
+
+.route{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:820px){.route{grid-template-columns:1fr}}
+.route img{border-radius:10px;border:1px solid var(--line);background:#F3EFE8}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;font-size:15px}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--rust);color:#fff;font:600 13px/28px var(--font-body);text-align:center}
+
+.ideas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.ideas{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.ideas{grid-template-columns:1fr}}
+.idea{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.idea .top{padding:18px;min-height:110px;display:flex;flex-direction:column;justify-content:space-between;gap:10px}
+.idea .top small{font:600 11px/1 var(--font-body);letter-spacing:.12em}
+.idea .top b{font:600 20px/1.15 var(--font-display)}
+.idea .body{padding:16px 18px;font-size:14px;display:grid;gap:8px;flex:1}
+.idea .score{font:600 13px/1 var(--font-body);font-variant-numeric:tabular-nums;color:var(--muted)}
+.idea .score strong{font:600 22px/1 var(--font-display);color:var(--ink)}
+.idea .risk{color:var(--muted)}
+.idea.rec{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+
+.reco{margin-top:16px;background:var(--ink);color:var(--stone);border-radius:10px;padding:24px;display:grid;gap:8px}
+.reco small{font:600 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.reco b{font:600 22px/1.25 var(--font-display)}
+.reco p{margin:0;max-width:80ch;font-size:15px;opacity:.92}
+
+.principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+@media (max-width:820px){.principles{grid-template-columns:1fr}}
+.pr{border-top:2px solid var(--ink);padding-top:10px;font-size:15px}
+.pr b{display:block;margin-bottom:2px}
+
+.refs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.refs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.refs figure button{all:unset;cursor:zoom-in;display:block;border-radius:10px;overflow:hidden}
+.refs img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.refs .wide{grid-column:span 3}
+.refs .wide img{aspect-ratio:21/9}
+@media (max-width:820px){.refs .wide{grid-column:span 2}}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;font-size:15px}
+@media (max-width:700px){.pair{grid-template-columns:1fr}}
+.pair div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px;list-style:none;padding:0;margin:0}
+.facts li{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px}
+.need{margin:18px 0 0;padding:0;list-style:none;counter-reset:n;display:grid;gap:8px}
+.need li{counter-increment:n;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--rust);border-radius:8px;padding:12px 14px;font-size:15px}
+.need li::before{content:counter(n) ". ";font-weight:600}
+
+footer{padding:56px 0 64px;color:var(--muted);font-size:13px}
+footer p{max-width:80ch;margin:0 0 6px}
+
+dialog{border:0;padding:0;background:transparent;max-width:96vw;max-height:94vh}
+dialog::backdrop{background:rgba(10,12,14,.88)}
+dialog img{max-width:96vw;max-height:86vh;border-radius:8px}
+dialog p{color:#E7ECEF;font-size:14px;margin:8px 2px 0}
+dialog button{position:fixed;top:14px;right:16px;font:500 14px/1 var(--font-body);padding:10px 14px;border-radius:8px;border:0;background:#E7ECEF;color:#18212B;cursor:pointer}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas id="topo" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="eyebrow">Антоновича, 122 · бывший банк + магазин · отчёт на 16 ноября 2026</div>
+    <h1>Кайлас</h1>
+    <p class="lead">Что уже сделано по дизайну магазина: 3D-модель, визуализации двух направлений, маршрут покупателя, четыре идеи концепции и референсы. Всё на одной странице, без лишнего.</p>
+    <div class="chips">
+      <span class="chip accent">Этап: концепция, ждём решения владельца</span>
+      <span class="chip">Обмер ещё не сделан</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Разделы">
+  <div class="wrap">
+    <a href="#summary">Коротко</a>
+    <a href="#model">3D-модель</a>
+    <a href="#renders">Визуализации</a>
+    <a href="#route">Маршрут</a>
+    <a href="#ideas">Идеи</a>
+    <a href="#refs">Референсы</a>
+    <a href="#next">Что нужно решить</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="summary">
+  <div class="sec-head"><span class="sec-num">01</span><h2>Коротко</h2></div>
+  <p class="sub">Модель построена по плану BD v0.3 и техпаспорту. Все решения владельца, принятые до 7 ноября, в ней учтены.</p>
+  <div class="summary">
+    <div class="sum"><b>2</b><span>направления визуально проработаны: «Базовый лагерь» и «Топография»</span></div>
+    <div class="sum"><b>9</b><span>рендеров ключевых зон: вход, №1 касса, №5 обувь, №7 одежда</span></div>
+    <div class="sum"><b>3D</b><span>интерактивная модель первого этажа, открывается в браузере и на телефоне</span></div>
+    <div class="sum"><b>4</b><span>идеи концепции с оценкой по 10 критериям и рекомендацией</span></div>
+  </div>
+</section>
+
+<section id="model">
+  <div class="sec-head"><span class="sec-num">02</span><h2>3D-модель</h2></div>
+  <p class="sub">Модель можно вращать, выбирать комнату, смотреть изнутри и срезать стены по высоте. Сверху переключаются два направления.</p>
+  <div class="viewer"><iframe src="3d/" title="3D-модель магазина Кайлас" loading="lazy" allow="fullscreen"></iframe></div>
+  <div class="under">
+    <span>Мебель по размерам ориентировочная, товар условный. Материалы упрощены, их точный вид показывают рендеры ниже.</span>
+    <a class="btn" href="3d/">Открыть на весь экран</a>
+  </div>
+</section>
+
+<section id="renders">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Визуализации</h2></div>
+  <p class="sub">Одна и та же планировка в двух направлениях. Чёрный мрамор банка сохранён в обоих.</p>
+  <div class="concepts">
+    <div class="concept">
+      <div class="tag">Направление 01</div>
+      <h3>Базовый лагерь</h3>
+      <p>Светлое дерево, белые стены, чёрные рейки. Тёплый и открытый магазин, близкий к нынешней сети. Рельеф горы вырезан на деревянном панно как акцент.</p>
+      <div class="swatches" aria-label="Палитра"><i style="background:#E8C79A"></i><i style="background:#F4F2EE"></i><i style="background:#1E1F21"></i><i style="background:#C9471F"></i></div>
+    </div>
+    <div class="concept">
+      <div class="tag">Направление 02</div>
+      <h3>Топография</h3>
+      <p>Графитовые стены, светлые линии рельефа, свет только на товаре. Сдержанный, более премиальный зал, где товар светится на тёмном фоне.</p>
+      <div class="swatches" aria-label="Палитра"><i style="background:#2A2B2E"></i><i style="background:#9EA3A6"></i><i style="background:#E8C79A"></i><i style="background:#C6D84A"></i></div>
+    </div>
+  </div>
+  <div class="switch" role="group" aria-label="Направление">
+    <button type="button" data-c="c1" aria-pressed="true">Базовый лагерь</button>
+    <button type="button" data-c="c2" aria-pressed="false">Топография</button>
+  </div>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<section id="route">
+  <div class="sec-head"><span class="sec-num">04</span><h2>Маршрут покупателя</h2></div>
+  <p class="sub">Петля без тупиков: от входа вглубь к обуви и горке, обратно через одежду и к кассе у выхода. Двое продавцов видят все ключевые точки.</p>
+  <div class="route">
+    <figure><img src="img/route_plan.png" alt="План первого этажа с маршрутом покупателя от 1 до 8" loading="lazy" width="1004" height="1250"><figcaption>Схема, не в масштабе. Номера комнат по техпаспорту.</figcaption></figure>
+    <ol class="steps">
+      <li>Вход через две двери и тамбур. Левые стеклянные двери без ручки, за ними FF, открытая к №1.</li>
+      <li>№1: выбор и касса. Касса одна, у выхода.</li>
+      <li>№5: обувь. Сплошной Г-стенд от угла закрывает окно, в центре лавка и горка для примерки.</li>
+      <li>№4: альпинизм, боковой вход из №5. Между №4 и №8 глухая стена.</li>
+      <li>№7: одежда и примерочные.</li>
+      <li>№6: комплекты и сезонный товар.</li>
+      <li>№2: кемпинг.</li>
+      <li>№3: витрина на улицу.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="ideas">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Четыре идеи концепции</h2></div>
+  <p class="sub">Второй раунд, 7 ноября. Каждое направление вырастает из одной мысли о том, чем должен быть этот магазин. Оценка по 10 критериям, максимум 50. Это мнение дизайнера, его нужно проверить на команде.</p>
+  <div class="ideas">
+    <article class="idea"><div class="top" style="background:#17181A;color:#EDE8DF"><small>TIMELESS</small><b>Хранилище</b></div>
+      <div class="body"><span>Банк как хранилище проверенного снаряжения. Дуб, известь, мрамор, тишина.</span><span class="score"><strong>36</strong> / 50</span><span class="risk">Риск: может показаться дорогим и закрытым.</span></div></article>
+    <article class="idea"><div class="top" style="background:#2D46C8;color:#fff"><small>FUTURE ICONIC</small><b>Кора</b></div>
+      <div class="body"><span>Кора — это обход вокруг горы. Одна светящаяся линия ведёт покупателя через все залы.</span><span class="score"><strong>42</strong> / 50</span><span class="risk">Риск: сложный и дорогой монтаж, строить только после обмера.</span></div></article>
+    <article class="idea"><div class="top" style="background:#D3D4CF;color:#1F2123"><small>RADICAL</small><b>Полевая лаборатория</b></div>
+      <div class="body"><span>Доказательство вместо обещания. Сетка, светящиеся стены, станции для тестов снаряжения.</span><span class="score"><strong>37</strong> / 50</span><span class="risk">Риск: может выглядеть как склад.</span></div></article>
+    <article class="idea rec"><div class="top" style="background:#D8B98A;color:#1F2123"><small>СИНТЕЗ</small><b>Вторая высота</b></div>
+      <div class="body"><span>Язык вашей сети, поднятый на уровень выше. Те же материалы, но спокойнее и цельнее.</span><span class="score"><strong>37</strong> / 50</span><span class="risk">Риск: «то же, что было».</span></div></article>
+  </div>
+  <div class="reco">
+    <small>Рекомендация</small>
+    <b>«Вторая высота» как основа, «Кора» как главная идея</b>
+    <p>Материалы и система сети из «Второй высоты»: реально, узнаваемо и укладывается в бюджет. Поверх неё петля-маршрут и одна линия навигации и света из «Коры». Из «Хранилища» берём «зал героев» в мраморной части, из «Лаборатории» бирки «Проверено» и горку для примерки.</p>
+  </div>
+  <div class="principles">
+    <div class="pr"><b>Маршрут-петля</b>От входа вглубь, «вершина» в №5, назад через одежду к кассе.</div>
+    <div class="pr"><b>Одна линия на одной высоте</b>Сквозной профиль через все залы: рейка, свет и навигация сразу.</div>
+    <div class="pr"><b>Доказательство вместо декора</b>Бирка «Проверено» на топ-моделях: кто, где, сколько. Данные только от команды.</div>
+    <div class="pr"><b>Мрамор банка главный</b>Стены матовые и спокойнее пола. №5–№8 становятся «залом героев».</div>
+    <div class="pr"><b>Сезон за одну ночь</b>Около трети оборудования мобильное: острова на колёсах и сменные кассеты.</div>
+    <div class="pr"><b>Тишина и свет</b>Акустические вставки в потолке против эха. Свет на товар с CRI от 90.</div>
+  </div>
+</section>
+
+<section id="refs">
+  <div class="sec-head"><span class="sec-num">06</span><h2>Референсы</h2></div>
+  <p class="sub">Из чего исходим: магазины вашей сети и ориентир по качеству картинки.</p>
+  <div class="refs" id="refs-grid"></div>
+  <div class="pair">
+    <div><b>Что берём из сети.</b> Узнаваемый язык: панели с треугольной перфорацией, каменная горка, лес в примерочных, красные шторы, тёплая фанера, рейки, треки на потолке. Покупатели это уже знают.</div>
+    <div><b>Что исправляем.</b> Слишком много разных узоров рядом (топо, хребты, треугольники, фото леса) и разные цвета панелей в разных залах. В новом здании всё должно быть спокойнее и цельнее.</div>
+  </div>
+</section>
+
+<section id="next">
+  <div class="sec-head"><span class="sec-num">07</span><h2>Что зафиксировано и что нужно решить</h2></div>
+  <p class="sub">Эти решения владельца уже есть в модели:</p>
+  <ul class="facts">
+    <li>Один вход: правые двери, тамбур, внутренние двери</li>
+    <li>FF полностью открыта к №1</li>
+    <li>Лестница и мрамор банка сохраняются</li>
+    <li>Касса одна, в №1</li>
+    <li>Обувь в №5, сплошной Г-стенд закрывает окно</li>
+    <li>Между №4 и №8 глухая стена</li>
+    <li>Горка для примерки обязательна</li>
+    <li>Двое продавцов одновременно</li>
+  </ul>
+  <p class="sub" style="margin-top:28px;margin-left:0">От владельца нужно:</p>
+  <ol class="need">
+    <li>Одобрить дизайн в целом или назвать, что поправить в первую очередь.</li>
+    <li>Выбрать основу: одно из направлений или рекомендованную комбинацию.</li>
+    <li>Выбрать отделку: светлую («Базовый лагерь») или тёмную («Топография»).</li>
+    <li>Назначить обмер. Без него нет рабочих чертежей и точной сметы.</li>
+    <li>Дать данные для бирок «Проверено»: кто из команды что тестировал.</li>
+  </ol>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>Это концепция, не рабочие чертежи. Стены и проёмы взяты из модели BD v0.3 без обмера, размеры мебели ориентировочные, товар в 3D условный, свет без фотометрии.</p>
+  <p>Кайлас · Антоновича, 122 · 16 ноября 2026</p>
+</footer>
+
+<dialog id="lb" aria-label="Изображение"><button type="button" id="lbClose">Закрыть</button><img id="lbImg" alt=""><p id="lbCap"></p></dialog>
+
+<script>
+const RENDERS = {
+  c1:[
+    {f:"c1_r5",t:"№5 Обувь",d:"Сплошной Г-стенд от угла, дубовая лавка, каменная горка для примерки, панно с рельефом."},
+    {f:"c1_r5_corner",t:"№5 Обувь, угол",d:"Короткое плечо Г-стенда на собственном корпусе до потолка закрывает окно."},
+    {f:"c1_r1",t:"№1 Выбор и касса",d:"Одна касса у выхода, стол с мелочами у кассы, полки с аксессуарами."},
+    {f:"c1_r7",t:"№7 Одежда",d:"Рейки по стенам, витрина курток на рельефном панно, столы с базовым слоем."},
+    {f:"c1_entry",t:"Вход",d:"Вид от внутренних дверей: первым видно панно с рельефом и стол в №1."}
+  ],
+  c2:[
+    {f:"c2_r5",t:"№5 Обувь",d:"Тот же Г-стенд и горка на тёмных стенах. Свет только на товаре."},
+    {f:"c2_r1",t:"№1 Выбор и касса",d:"Графитовая стена с линиями рельефа за кассой."},
+    {f:"c2_r7",t:"№7 Одежда",d:"Куртки на тёмном рельефном панно, светлые полки по бокам."},
+    {f:"c2_entry",t:"Вход",d:"От дверей: тёмный зал, светлое панно с рельефом как ориентир."}
+  ]
+};
+const REFS = [
+  {f:"ref_quality",t:"Ориентир по качеству",d:"Уровень картинки, к которому стремимся: обувная стена, деревянная лавка, треки света.",wide:true},
+  {f:"ref_shoes_wall",t:"Обувь в сети",d:"Топо-стена, каменная горка, дубовая лавка."},
+  {f:"ref_kitchen",t:"Кемпинг в сети",d:"Фанера с треугольной перфорацией, чёрные рейки."},
+  {f:"ref_fitting",t:"Примерочные",d:"Лес на стенах, красные шторы."},
+  {f:"ref_jackets",t:"Куртки",d:"Фанерные панели «хребты», рейки."},
+  {f:"ref_clothes",t:"Одежда",d:"Серые панели, островные рейки, треки на белом потолке."}
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function fig(r){ return `<figure${r.wide?' class="wide"':''}><button type="button" data-src="img/${r.f}.jpg" data-cap="${esc(r.t+'. '+r.d)}" aria-label="Увеличить: ${esc(r.t)}"><img src="img/${r.f}.jpg" alt="${esc(r.t+'. '+r.d)}" loading="lazy"></button><figcaption><b>${esc(r.t)}.</b> ${esc(r.d)}</figcaption></figure>`; }
+function showGallery(c){
+  document.getElementById("gallery").innerHTML = RENDERS[c].map(fig).join("");
+  document.querySelectorAll(".switch button").forEach(b => b.setAttribute("aria-pressed", b.dataset.c === c ? "true" : "false"));
+}
+document.querySelectorAll(".switch button").forEach(b => b.addEventListener("click", () => showGallery(b.dataset.c)));
+showGallery("c1");
+document.getElementById("refs-grid").innerHTML = REFS.map(fig).join("");
+
+const lb = document.getElementById("lb");
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-src]"); if (!b) return;
+  document.getElementById("lbImg").src = b.dataset.src;
+  document.getElementById("lbImg").alt = b.dataset.cap;
+  document.getElementById("lbCap").textContent = b.dataset.cap;
+  if (lb.showModal) lb.showModal();
+});
+document.getElementById("lbClose").addEventListener("click", () => lb.close());
+lb.addEventListener("click", e => { if (e.target === lb) lb.close(); });
+
+(function(){
+  const cv = document.getElementById("topo"); if (!cv.getContext) return;
+  const draw = () => {
+    const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+    cv.width = r.width*dpr; cv.height = r.height*dpr;
+    const x = cv.getContext("2d"); x.scale(dpr,dpr); x.strokeStyle = "#C3CCD3"; x.lineWidth = 1;
+    const cx = r.width*0.8, cy = r.height*0.95;
+    for (let k=1;k<=24;k++){ const rad=k*22; x.beginPath();
+      for (let a=0;a<=Math.PI*2+0.01;a+=0.04){ const n=1+0.18*Math.sin(3*a+k*0.35)+0.09*Math.sin(7*a-k*0.2);
+        const px=cx+Math.cos(a)*rad*n*1.5, py=cy+Math.sin(a)*rad*n*0.8; a===0?x.moveTo(px,py):x.lineTo(px,py); }
+      x.stroke(); }
+  };
+  draw(); let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(draw,150); });
+})();
+</script>
+</body>
+</html>
