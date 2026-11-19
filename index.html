@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -24,6 +24,7 @@
     <div class="chips">
       <span class="chip accent">Етап: концепція ключових залів</span>
       <span class="chip">Обмірів ще немає</span>
+      <a class="chip" href="#survey" style="text-decoration:none;color:inherit"><b>Заповнити анкету →</b></a>
     </div>
   </div>
 </header>
@@ -37,7 +38,7 @@
     <a href="#model">3D-модель</a>
     <a href="#route">Маршрут</a>
     <a href="#archive">Архів</a>
-    <a href="#next">Що вирішити</a>
+    <a href="#survey"><b>Анкета</b></a>
   </div>
 </nav>
 
@@ -55,7 +56,7 @@
 
 <section id="path1">
   <div class="sec-head"><span class="sec-num">02</span><h2>Шлях 1 · Як бачать власники</h2></div>
-  <p class="sub"><span class="status">Рендери Codex від 19.11: №1–№3 фінальні, решта — швидкі чернетки. Фінальні ще готуються</span></p>
+  <p class="sub"><span class="status">Рендери Codex від 19.11, версія B0.7. Готові для перегляду</span></p>
   <p class="sub">Палітра власників:</p>
   <div class="pal" style="margin-left:44px">
     <span><i style="background:#DDBE8E"></i>Світле дерево</span>
@@ -159,15 +160,14 @@
   </details>
 </section>
 
-<section id="next">
-  <div class="sec-head"><span class="sec-num">08</span><h2>Що потрібно вирішити</h2></div>
-  <ol class="need">
-    <li>Після рендерів обох шляхів: обрати основу або сказати, що взяти з кожного.</li>
-    <li>Акцент: яскравий салатовий на площинах чи приглушений лише лінією.</li>
-    <li>Стіни: графітові чи теплий світлий камінь.</li>
-    <li>Призначити обмір. Без нього немає робочих креслень і точного кошторису.</li>
-    <li>Підтвердити місце дверей «Службовий вхід» у залі №5.</li>
-  </ol>
+<section id="survey">
+  <div class="sec-head"><span class="sec-num">08</span><h2>Анкета для власників</h2></div>
+  <p class="sub">Подивіться обидва шляхи й дайте відповіді. Відповіді зберігаються в цьому браузері, тож можна повернутися пізніше. Наприкінці натисніть «Надіслати в Telegram» або «Скопіювати» й перешліть Ганні.</p>
+  <form id="sv" class="sv" novalidate></form>
+  <div class="sv-out" id="svOut">
+    <div class="row"><button type="button" class="btn" id="svTg">Надіслати в Telegram</button><button type="button" class="btn ghost" id="svCopy">Скопіювати відповіді</button><button type="button" class="btn ghost" id="svClear">Очистити</button><span id="svMsg" aria-live="polite"></span></div>
+    <details><summary>Переглянути текст відповідей</summary><pre id="svText"></pre></details>
+  </div>
 </section>
 
 </main>
@@ -198,17 +198,20 @@ const ZONES = [
 document.getElementById("zones").innerHTML = ZONES.map(z=>`<div class="zone${z.k?' key':''}"><h4>${esc(z.t)}${z.e?` <em>· ${esc(z.e)}</em>`:''}${z.k?' <em>· перша черга</em>':''}</h4><ul>${z.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`).join("");
 
 const P1 = [
- {f:"p1_plan", t:"План торгівлі", d:"Розстановка 33 позицій за списком власників, перший поверх і підвал."},
+ {f:"p1_plan", t:"План торгівлі", d:"Розстановка за списком власників: перший поверх і підвал."},
  {f:"p1_r1", t:"№1 Каса", d:"Ліхтарики й аксесуари на стіні, дві стінки спортхарчування навпроти каси."},
- {f:"p1_r5_feet", t:"№5 «Все для ніг»", d:"Шкарпетки й аксесуари для ніг, дзеркало, тумба, двері «Службовий вхід». Чернетка."},
- {f:"p1_relax", t:"Релакс-зона", d:"Крісла, книжкова стійка, окуляри й догляд у бічній кишені №6. Чернетка."},
- {f:"p1_lecture", t:"Режим лекції", d:"Мобільні меблі прибрані, №6 стає залою для лекції. Чернетка."},
- {f:"p1_r6", t:"№6 Одяг", d:"Капсули місто, трейл, біг; гондоли, манекен. Чернетка."},
- {f:"p1_r7", t:"№7 Примірочні", d:"Три примірочні, лава, капсули. Чернетка."},
- {f:"p1_r4", t:"№4 Скелелазіння", d:"Карабіни, системи, стінка з зачіпками. Чернетка."},
+ {f:"p1_r5_shoe", t:"№5 Взуття", d:"Суцільний Г-стенд, лава, гірка для примірки."},
+ {f:"p1_r5_feet", t:"№5 «Все для ніг»", d:"Шкарпетки й аксесуари для ніг, дзеркало, тумба, двері «Службовий вхід»."},
+ {f:"p1_relax", t:"Релакс-зона", d:"Крісла, книжкова стійка, окуляри й догляд у бічній кишені №6."},
+ {f:"p1_lecture", t:"Режим лекції", d:"Мобільні меблі прибрані, №6 стає залою для лекції."},
+ {f:"p1_r6", t:"№6 Одяг", d:"Капсули місто, трейл, біг; гондоли, манекен."},
+ {f:"p1_win6", t:"№6 Вітрина", d:"Манекени й сезонна композиція."},
+ {f:"p1_r7", t:"№7 Примірочні", d:"Три примірочні, лава, капсули."},
+ {f:"p1_r4", t:"№4 Скелелазіння", d:"Карабіни, системи, каски, стінка з зачіпками, палиці."},
  {f:"p1_r2", t:"№2 Рюкзаки й посуд", d:"Рюкзаки на стіні, посуд на полицях навпроти."},
  {f:"p1_r3", t:"№3 Кемпінг", d:"Намети, спальники, килимки, бівачна композиція."},
- {f:"p1_outlet", t:"Підвал · аутлет", d:"Взуття й аксесуари зі знижкою. Чернетка."}
+ {f:"p1_outlet", t:"Підвал · аутлет", d:"Взуття й аксесуари зі знижкою."},
+ {f:"p1_top", t:"Вид згори", d:"Перший поверх з усіма зонами."}
 ];
 document.getElementById("p1gal").innerHTML = P1.map(r=>`<figure><button type="button" data-src="img/${r.f}.jpg" data-cap="${esc(r.t+'. '+r.d)}" aria-label="Збільшити: ${esc(r.t)}"><img src="img/${r.f}.jpg" alt="${esc(r.t+'. '+r.d)}" loading="lazy"></button><figcaption><b>${esc(r.t)}.</b> ${esc(r.d)}</figcaption></figure>`).join("");
 const P2 = [
@@ -261,6 +264,88 @@ function showVariant(id){
 document.getElementById("vtabs").innerHTML=VARIANTS.map(v=>`<button type="button" role="tab" data-v="${v.id}" aria-selected="false"><i style="background:${v.color}"></i>${esc(v.name)}</button>`).join("");
 document.querySelectorAll("#vtabs button").forEach(b=>b.addEventListener("click",()=>showVariant(b.dataset.v)));
 showVariant("second");
+
+
+const SURVEY = [
+ {h:"Хто відповідає"},
+ {id:"name", q:"Ваше ім’я", type:"text"},
+ {h:"Загальний вибір"},
+ {id:"path", q:"Який шлях вам ближчий?", type:"radio", opts:["Шлях 1 · як бачать власники","Шлях 2 · рекомендація дизайнера","Змішати: взяти найкраще з обох"], note:true},
+ {id:"walls", q:"Колір стін", type:"radio", opts:["Графітові","Теплі світлі (бежево-сірі)","У різних залах по-різному"], note:true},
+ {id:"accent", q:"Салатовий акцент", type:"radio", opts:["Яскравий, на великих площинах","Приглушений, лише лінією й бирками","Ще не знаю"], note:true},
+ {id:"line", q:"Лінія-фриз із назвами зон через усі зали (Шлях 2)", type:"radio", opts:["Так, подобається","Ні, краще окремі таблички","Не знаю"]},
+ {id:"furniture", q:"Меблі: одна система — світле дерево й чорний метал у всіх залах", type:"radio", opts:["Так","Ні, хочемо різні матеріали в різних залах"], note:true},
+ {h:"Зали: що подобається і що змінити"},
+ {id:"z1", q:"№1 Каса, ліхтарики, спортхарчування", type:"zone"},
+ {id:"z5", q:"№5 Взуття й «Все для ніг»", type:"zone"},
+ {id:"zr", q:"Релакс-зона між №5 і №6", type:"zone"},
+ {id:"z6", q:"№6 Одяг: місто, трейл, біг", type:"zone"},
+ {id:"z7", q:"№7 Одяг і примірочні", type:"zone"},
+ {id:"z4", q:"№4 Скелелазіння", type:"zone"},
+ {id:"z2", q:"№2 Рюкзаки й посуд", type:"zone"},
+ {id:"z3", q:"№3 Кемпінг", type:"zone"},
+ {id:"zb", q:"Підвал · аутлет", type:"zone"},
+ {h:"Практичні питання"},
+ {id:"door", q:"Двері «Службовий вхід» у №5: місце на рендерах правильне?", type:"radio", opts:["Так","Ні, інше місце","Не знаю"], note:true},
+ {id:"measure", q:"Коли можна зробити обмір приміщення?", type:"text", ph:"Дата або тиждень"},
+ {id:"open", q:"Бажана дата відкриття", type:"text", ph:"Місяць, рік"},
+ {id:"close", q:"Чи можна закрити магазин на час ремонту?", type:"radio", opts:["Так, повністю","Лише частинами, зал за залом","Ні"]},
+ {id:"budget", q:"Орієнтир бюджету на ремонт і обладнання", type:"text", ph:"Наприклад, до 5 млн грн"},
+ {id:"tested", q:"Хто з команди дасть дані для бирок «Перевірено» (хто, де, скільки тестував)?", type:"text"},
+ {id:"other", q:"Що ще важливо, про що ми не спитали?", type:"textarea"}
+];
+const SV_KEY="kailas-survey-v1";
+let sv={}; try{ sv=JSON.parse(localStorage.getItem(SV_KEY)||"{}"); }catch(e){ sv={}; }
+const svSave=()=>{ try{ localStorage.setItem(SV_KEY, JSON.stringify(sv)); }catch(e){} svRender(); };
+(function build(){
+  const f=document.getElementById("sv"); let h="";
+  SURVEY.forEach(it=>{
+    if(it.h){ h+=`<h3 class="sv-h">${esc(it.h)}</h3>`; return; }
+    h+=`<fieldset class="sv-q"><legend>${esc(it.q)}</legend>`;
+    if(it.type==="text") h+=`<input type="text" id="sv_${it.id}" data-k="${it.id}" placeholder="${esc(it.ph||"")}">`;
+    if(it.type==="textarea") h+=`<textarea id="sv_${it.id}" data-k="${it.id}" rows="3"></textarea>`;
+    if(it.type==="radio"){ h+=`<div class="sv-opts">`+it.opts.map((o,i)=>`<label for="sv_${it.id}_${i}"><input type="radio" name="sv_${it.id}" id="sv_${it.id}_${i}" data-k="${it.id}" value="${esc(o)}"> ${esc(o)}</label>`).join("")+`</div>`;
+      if(it.note) h+=`<input type="text" id="sv_${it.id}_note" data-k="${it.id}_note" placeholder="Коментар (необов’язково)">`; }
+    if(it.type==="zone"){ const o=["Подобається Шлях 1","Подобається Шлях 2","Обидва добре","Треба змінити"];
+      h+=`<div class="sv-opts">`+o.map((x,i)=>`<label for="sv_${it.id}_${i}"><input type="radio" name="sv_${it.id}" id="sv_${it.id}_${i}" data-k="${it.id}" value="${esc(x)}"> ${esc(x)}</label>`).join("")+`</div><input type="text" id="sv_${it.id}_note" data-k="${it.id}_note" placeholder="Що саме змінити або додати">`; }
+    h+=`</fieldset>`;
+  });
+  f.innerHTML=h;
+  f.querySelectorAll("[data-k]").forEach(el=>{
+    const k=el.dataset.k;
+    if(el.type==="radio"){ if(sv[k]===el.value) el.checked=true; el.addEventListener("change",()=>{ sv[k]=el.value; svSave(); }); }
+    else { if(sv[k]) el.value=sv[k]; el.addEventListener("input",()=>{ sv[k]=el.value; clearTimeout(el._t); el._t=setTimeout(svSave,300); }); }
+  });
+  f.addEventListener("submit",e=>e.preventDefault());
+})();
+function svText(){
+  let out="Кайлас · відповіді власників\n";
+  SURVEY.forEach(it=>{
+    if(it.h){ out+=`\n${it.h.toUpperCase()}\n`; return; }
+    const a=sv[it.id]||"—", n=sv[it.id+"_note"];
+    out+=`• ${it.q}: ${a}${n?` (${n})`:""}\n`;
+  });
+  return out.trim();
+}
+function svRender(){
+  document.getElementById("svText").textContent=svText();
+  const done=SURVEY.filter(it=>!it.h && sv[it.id]).length, all=SURVEY.filter(it=>!it.h).length;
+  document.getElementById("svMsg").textContent=`Заповнено ${done} з ${all}`;
+}
+svRender();
+document.getElementById("svTg").addEventListener("click",()=>{
+  const t=svText(); const u="https://t.me/share/url?url="+encodeURIComponent("https://hanno4ka777.github.io/kailas/")+"&text="+encodeURIComponent(t.slice(0,3500));
+  const a=document.createElement("a"); a.href=u; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove();
+});
+document.getElementById("svCopy").addEventListener("click",async()=>{
+  try{ await navigator.clipboard.writeText(svText()); document.getElementById("svMsg").textContent="Скопійовано. Вставте в повідомлення Ганні."; }
+  catch(e){ document.querySelector("#svOut details").open=true; document.getElementById("svMsg").textContent="Не вдалося скопіювати автоматично. Виділіть текст нижче."; }
+});
+document.getElementById("svClear").addEventListener("click",()=>{
+  if(!document.getElementById("svClear").dataset.sure){ document.getElementById("svClear").dataset.sure="1"; document.getElementById("svClear").textContent="Точно очистити?"; return; }
+  sv={}; svSave(); document.querySelectorAll("#sv [data-k]").forEach(el=>{ if(el.type==="radio") el.checked=false; else el.value=""; });
+  const b=document.getElementById("svClear"); delete b.dataset.sure; b.textContent="Очистити";
+});
 
 const lb = document.getElementById("lb");
 document.addEventListener("click", e => {
