@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Кайлас · 3D-модель магазина</title>
+<title>Кайлас · 3D-модель магазину</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#F1EFEA;--sub:#B9B6AE;--bg:#1C1D1F;--panel:rgba(28,29,31,.88);--line:#3A3B3E;--acc:#E0662B}
@@ -36,32 +36,32 @@
 </style>
 </head>
 <body>
-<canvas id="c" aria-label="3D-модель магазина Кайлас"></canvas>
+<canvas id="c" aria-label="3D-модель магазину Кайлас"></canvas>
 <div class="top">
-  <div class="title"><b><a href="../" style="color:inherit;text-decoration:none">← Кайлас · 3D-модель</a></b><span>Антоновича, 122 · концепт, не рабочий чертёж</span></div>
-  <div class="seg" role="group" aria-label="Концепция">
-    <button id="cc1" aria-pressed="true">01 Базовый лагерь</button>
-    <button id="cc2" aria-pressed="false">02 Топография</button>
+  <div class="title"><b><a href="../" style="color:inherit;text-decoration:none">← Кайлас · 3D-модель</a></b><span>Антоновича, 122 · концепт, не робоче креслення</span></div>
+  <div class="seg" role="group" aria-label="Концепція">
+    <button id="cc1" aria-pressed="true">01 Базовий табір</button>
+    <button id="cc2" aria-pressed="false">02 Топографія</button>
   </div>
 </div>
-<div class="hint" id="hint">Мышь: тянуть — вращать, колесо — приблизить · Телефон: один палец — вращать, два — приблизить и сдвинуть</div>
+<div class="hint" id="hint">Миша: тягнути — обертати, колесо — наближати · Телефон: один палець — обертати, два — наближати й зсувати</div>
 <div class="zoom" aria-label="Масштаб">
-  <button id="zin" aria-label="Приблизить">+</button>
-  <button id="zout" aria-label="Отдалить">−</button>
-  <button id="zreset" aria-label="Сбросить вид" style="font-size:13px">⟲</button>
+  <button id="zin" aria-label="Наблизити">+</button>
+  <button id="zout" aria-label="Віддалити">−</button>
+  <button id="zreset" aria-label="Скинути вид" style="font-size:13px">⟲</button>
 </div>
 <div class="bar">
-  <div class="row"><div class="rooms" id="rooms" role="group" aria-label="Комнаты"></div></div>
+  <div class="row"><div class="rooms" id="rooms" role="group" aria-label="Кімнати"></div></div>
   <div class="row">
     <div class="tools">
-      <button id="tIn" aria-pressed="false">Вид изнутри</button>
-      <button id="tCeil" aria-pressed="false">Потолок</button>
-      <label for="hcut">Высота стен <input id="hcut" type="range" min="0.9" max="3.0" step="0.05" value="3.0"></label>
+      <button id="tIn" aria-pressed="false">Вид зсередини</button>
+      <button id="tCeil" aria-pressed="false">Стеля</button>
+      <label for="hcut">Висота стін <input id="hcut" type="range" min="0.9" max="3.0" step="0.05" value="3.0"></label>
     </div>
   </div>
-  <div class="row"><div class="note">Размеры мебели ориентировочные, до обмера · товар условный · материалы упрощены (рендеры отдельно)</div></div>
+  <div class="row"><div class="note">Розміри меблів орієнтовні, до обмірів · товар умовний · спрощені матеріали (рендери — окремо)</div></div>
 </div>
-<div id="load"><div>Загружаю модель…</div><div class="p"><i id="pb"></i></div></div>
+<div id="load"><div>Завантажую модель…</div><div class="p"><i id="pb"></i></div></div>
 
 <script type="importmap">
 {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
@@ -92,12 +92,12 @@ const fill=new THREE.DirectionalLight(0xffe6cc,0.6); fill.position.set(-8,6,-6);
 // Blender (x,y,z) -> three (x, z, -y)
 const B=(x,y,z=0)=>new THREE.Vector3(x,z,-y);
 const ROOMS=[
-  {id:'all',name:'Обзор'},
-  {id:'entry',name:'Вход',c:[3.45,-6.55],look:[1.6,-2.4]},
+  {id:'all',name:'Огляд'},
+  {id:'entry',name:'Вхід',c:[3.45,-6.55],look:[1.6,-2.4]},
   {id:'r1',name:'№1 Каса',c:[3.9,-5.0],look:[1.0,-2.6]},
-  {id:'r5',name:'№5 Обувь',c:[-1.75,-4.6],look:[-3.1,1.4]},
-  {id:'r7',name:'№7 Одежда',c:[-6.58,-1.8],look:[-6.58,2.3]},
-  {id:'r4',name:'№4 Альпинизм',c:[-0.25,1.0],look:[2.5,0.6]},
+  {id:'r5',name:'№5 Взуття',c:[-1.75,-4.6],look:[-3.1,1.4]},
+  {id:'r7',name:'№7 Одяг',c:[-6.58,-1.8],look:[-6.58,2.3]},
+  {id:'r4',name:'№4 Альпінізм',c:[-0.25,1.0],look:[2.5,0.6]},
   {id:'r2',name:'№2',c:[6.5,-4.8],look:[6.5,-2.0]},
   {id:'r6',name:'№6',c:[-2.0,-9.6],look:[-6.5,-6.0]},
   {id:'r3',name:'№3',c:[6.8,-9.9],look:[6.8,-6.5]},
@@ -172,7 +172,7 @@ function load(c){
   loader.load(`./kailas_${c.toLowerCase()}.glb`,g=>{
     cache[c]=g.scene; if(my!==token) return; active=g.scene; ceilings.length=0; prep(active); scene.add(active); setCeil(ceilOn||mode==='inside');
     loadEl.style.opacity=0; setTimeout(()=>loadEl.style.display='none',400);
-  },ev=>{ if(ev.total) pb.style.width=Math.round(ev.loaded/ev.total*100)+'%'; },err=>{ loadEl.querySelector('div').textContent='Не удалось загрузить модель'; console.error(err); });
+  },ev=>{ if(ev.total) pb.style.width=Math.round(ev.loaded/ev.total*100)+'%'; },err=>{ loadEl.querySelector('div').textContent='Не вдалося завантажити модель'; console.error(err); });
 }
 document.getElementById('cc1').addEventListener('click',()=>{scene.background.set('#1C1D1F');load('C1');});
 document.getElementById('cc2').addEventListener('click',()=>{scene.background.set('#141517');load('C2');});
