@@ -254,13 +254,13 @@ document.getElementById("zones").innerHTML = ZONES.map(z=>`<div class="zone${z.k
 
 
 const CMP=[
- {z:"№7 Одяг", ch:"Найпомітніша зміна: стіни графітові замість світлих. Так виглядатимуть зали одягу й скелелазіння.", a:"p1_r7", b:"p2_r7_hero", c:"p3_r7"},
+ {z:"№7 Одяг", ch:"Найпомітніша зміна: стіни й панелі графітові замість світлого дуба, дубовий декор лишається на гондолах і полицях. Так виглядатимуть зали одягу й скелелазіння. Графіт поглинає світло, тому тут потрібно більше світильників на стінах.", a:"p1_r7", b:"p2_r7_hero", c:"p3_r7.jpg?v=2"},
  {z:"Релакс-зона", ch:"Крісла графітові замість світло-бежевих, стіни чисто білі. Менше «пастелі».", a:"p1_relax", b:"p2_relax", c:"p3_relax"},
  {z:"№1 Каса", ch:"Майже без змін: стіни з теплого беже стали чисто білими, салатовий — брендовий KULUAR. Касу пропонуємо лишити світлою.", a:"p1_r1", b:"p2_r1_hero", c:"p3_r1"},
  {z:"№5 Взуття", ch:"Майже без змін: білі стіни замість беже, брендовий салатовий на лінії й табличках.", a:"p1_r5_shoe", b:"p2_r5_hero", c:"p3_r5"},
  {z:"№5 «Все для ніг»", ch:"Майже без змін: на товарах прибрано салатовий, він лишився лише на бирках.", a:"p1_r5_feet", b:"p2_r5_feet", c:"p3_r5_feet"}
 ];
-document.getElementById("cmpRows").innerHTML=CMP.map(r=>`<div class="cmprow"><div class="cmphead"><b>${esc(r.z)}</b><span><b class="chg">Що змінилось у Зведеному:</b> ${esc(r.ch)}</span></div><div class="cmpimgs">${[["Шлях 1 · замовник",r.a],["Шлях 2 · дизайнер",r.b],["Зведений",r.c]].map(([l,f])=>`<figure><button type="button" data-src="img/${f}.jpg" data-cap="${esc(r.z+' · '+l)}" aria-label="Збільшити: ${esc(r.z+' · '+l)}"><img src="img/${f}.jpg" alt="${esc(r.z+' · '+l)}" loading="lazy"></button><figcaption>${esc(l)}</figcaption></figure>`).join("")}</div></div>`).join("");
+document.getElementById("cmpRows").innerHTML=CMP.map(r=>`<div class="cmprow"><div class="cmphead"><b>${esc(r.z)}</b><span><b class="chg">Що змінилось у Зведеному:</b> ${esc(r.ch)}</span></div><div class="cmpimgs">${[["Шлях 1 · замовник",r.a],["Шлях 2 · дизайнер",r.b],["Зведений",r.c]].map(([l,f])=>`<figure><button type="button" data-src="img/${f.includes('.')?f:f+'.jpg'}" data-cap="${esc(r.z+' · '+l)}" aria-label="Збільшити: ${esc(r.z+' · '+l)}"><img src="img/${f.includes('.')?f:f+'.jpg'}" alt="${esc(r.z+' · '+l)}" loading="lazy"></button><figcaption>${esc(l)}</figcaption></figure>`).join("")}</div></div>`).join("");
 
 const P1 = [
  {f:"p1_plan", t:"План торгівлі", d:"Розстановка за списком замовника: перший поверх і підвал."},
