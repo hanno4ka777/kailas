@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -72,7 +72,7 @@
     </tbody>
   </table></div>
   <h3 class="mini">Порівняння зал за залом</h3>
-  <p class="sub" style="margin-left:0">Кожен рядок — одна зала. Шлях 2 і Зведений знято з однієї точки: порівнюйте кольори й характер. Шлях 1 від Codex знято з іншої точки: порівнюйте розстановку й функції.</p>
+  <p class="sub" style="margin-left:0">Кожен рядок — одна зала. Функції в усіх трьох однакові (список замовника), тому різниця лише в кольорах і матеріалах. Шлях 2 і Зведений знято з однієї точки. Шлях 1 від Codex знято з іншої точки, порівнюйте з ним загальний настрій, а не деталі.</p>
   <div id="cmpRows"></div>
 </section>
 
@@ -254,13 +254,13 @@ document.getElementById("zones").innerHTML = ZONES.map(z=>`<div class="zone${z.k
 
 
 const CMP=[
- {z:"№1 Каса", look:"Стіна з ліхтариками, дві гондоли спортхарчування.", a:"p1_r1", b:"p2_r1_hero", c:"p3_r1"},
- {z:"№5 Взуття", look:"Г-стенд, лава, гірка. Колір стін і кількість салатового.", a:"p1_r5_shoe", b:"p2_r5_hero", c:"p3_r5"},
- {z:"№5 «Все для ніг»", look:"Шкарпетки, дзеркало, тумба для примірки.", a:"p1_r5_feet", b:"p2_r5_feet", c:"p3_r5_feet"},
- {z:"Релакс-зона", look:"Диван, крісла, книжки, кава. Тон тканин.", a:"p1_relax", b:"p2_relax", c:"p3_relax"},
- {z:"№7 Одяг", look:"Графітові стіни у Зведеному замість світлих.", a:"p1_r7", b:"p2_r7_hero", c:"p3_r7"}
+ {z:"№7 Одяг", ch:"Найпомітніша зміна: стіни графітові замість світлих. Так виглядатимуть зали одягу й скелелазіння.", a:"p1_r7", b:"p2_r7_hero", c:"p3_r7"},
+ {z:"Релакс-зона", ch:"Крісла графітові замість світло-бежевих, стіни чисто білі. Менше «пастелі».", a:"p1_relax", b:"p2_relax", c:"p3_relax"},
+ {z:"№1 Каса", ch:"Майже без змін: стіни з теплого беже стали чисто білими, салатовий — брендовий KULUAR. Касу пропонуємо лишити світлою.", a:"p1_r1", b:"p2_r1_hero", c:"p3_r1"},
+ {z:"№5 Взуття", ch:"Майже без змін: білі стіни замість беже, брендовий салатовий на лінії й табличках.", a:"p1_r5_shoe", b:"p2_r5_hero", c:"p3_r5"},
+ {z:"№5 «Все для ніг»", ch:"Майже без змін: на товарах прибрано салатовий, він лишився лише на бирках.", a:"p1_r5_feet", b:"p2_r5_feet", c:"p3_r5_feet"}
 ];
-document.getElementById("cmpRows").innerHTML=CMP.map(r=>`<div class="cmprow"><div class="cmphead"><b>${esc(r.z)}</b><span>${esc(r.look)}</span></div><div class="cmpimgs">${[["Шлях 1 · замовник",r.a],["Шлях 2 · дизайнер",r.b],["Зведений",r.c]].map(([l,f])=>`<figure><button type="button" data-src="img/${f}.jpg" data-cap="${esc(r.z+' · '+l)}" aria-label="Збільшити: ${esc(r.z+' · '+l)}"><img src="img/${f}.jpg" alt="${esc(r.z+' · '+l)}" loading="lazy"></button><figcaption>${esc(l)}</figcaption></figure>`).join("")}</div></div>`).join("");
+document.getElementById("cmpRows").innerHTML=CMP.map(r=>`<div class="cmprow"><div class="cmphead"><b>${esc(r.z)}</b><span><b class="chg">Що змінилось у Зведеному:</b> ${esc(r.ch)}</span></div><div class="cmpimgs">${[["Шлях 1 · замовник",r.a],["Шлях 2 · дизайнер",r.b],["Зведений",r.c]].map(([l,f])=>`<figure><button type="button" data-src="img/${f}.jpg" data-cap="${esc(r.z+' · '+l)}" aria-label="Збільшити: ${esc(r.z+' · '+l)}"><img src="img/${f}.jpg" alt="${esc(r.z+' · '+l)}" loading="lazy"></button><figcaption>${esc(l)}</figcaption></figure>`).join("")}</div></div>`).join("");
 
 const P1 = [
  {f:"p1_plan", t:"План торгівлі", d:"Розстановка за списком замовника: перший поверх і підвал."},
