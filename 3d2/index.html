@@ -40,7 +40,8 @@
 <div class="top">
   <div class="title"><b><a href="../" style="color:inherit;text-decoration:none">← Кайлас · 3D-модель</a></b><span>Антоновича, 122 · два шляхи · концепт, не робоче креслення</span></div>
   <div class="seg" role="group" aria-label="Концепція">
-    <button id="ccP1" data-m="P1" aria-pressed="true">Шлях 1 · поверх</button>
+    <button id="ccP3" data-m="P3" aria-pressed="true">Зведений</button>
+    <button id="ccP1" data-m="P1" aria-pressed="false">Шлях 1 · поверх</button>
     <button id="ccP1B" data-m="P1B" aria-pressed="false">Шлях 1 · підвал</button>
     <button id="ccP2" data-m="P2" aria-pressed="false">Шлях 2</button>
   </div>
@@ -176,12 +177,12 @@ function load(c){
     loadEl.style.opacity=0; setTimeout(()=>loadEl.style.display='none',400);
   },ev=>{ if(ev.total) pb.style.width=Math.round(ev.loaded/ev.total*100)+'%'; },err=>{ loadEl.querySelector('div').textContent='Не вдалося завантажити модель'; console.error(err); });
 }
-const FILES={P1:'./p1_first.glb',P1B:'./p1_basement.glb',P2:'./p2_first.glb'};
+const FILES={P3:'./p3_first.glb',P1:'./p1_first.glb',P1B:'./p1_basement.glb',P2:'./p2_first.glb'};
 document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{ load(b.dataset.m); try{history.replaceState(null,'','#'+b.dataset.m.toLowerCase());}catch(e){} }));
 
 function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<h?68:50;camera.updateProjectionMatrix();}
 addEventListener('resize',resize); resize();
-setOverview(); markRooms(); load(({'#p2':'P2','#p1b':'P1B'})[location.hash]||'P1');
+setOverview(); markRooms(); load(({'#p2':'P2','#p1b':'P1B','#p1':'P1'})[location.hash]||'P3');
 setTimeout(()=>{document.getElementById('hint').style.opacity=0},6000);
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera);});
 </script>
