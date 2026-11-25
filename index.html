@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600&family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=7">
+<style>.vfurn img{height:auto;aspect-ratio:auto;object-fit:contain}#compare{scroll-margin-top:80px}</style>
 </head>
 <body>
 
@@ -58,8 +59,8 @@
     <span><i style="background:#1A1B1D"></i>Чорний мармур банку</span>
     <span><i style="background:#8DC449"></i>Салатовий KULUAR — лише таблички, лінія, бирки</span>
   </div>
-  <h3 class="mini">Порівняння зал за залом</h3>
-  <p class="sub" style="margin-left:0">Кожен рядок — одна зала. Шлях 1 і Шлях 2 показані вихідними рендерами. Праворуч — AI-візуалізація зведеного варіанту P3 від 25.11: матеріали, світло й товар опрацьовані нейромережею. Порівнюйте загальний образ; точну геометрію та дрібні деталі звіряйте з 3D-моделлю.</p>
+  <h3 class="mini" id="compare">Порівняння зал за залом</h3>
+  <p class="sub" style="margin-left:0">Кожен рядок — одна зала. Усі три колонки — AI-опрацювання відповідних рендерів від 25.11: матеріали, світло й товар деталізовані зі збереженням образу кожного варіанту. Праворуч — зведений P3. Порівнюйте загальний образ; точну геометрію та дрібні деталі звіряйте з 3D-моделлю.</p>
   <div id="cmpRows"></div>
 
   <h3 class="mini">Як це може виглядати: AI-візуалізація №5</h3>
@@ -150,7 +151,7 @@
     <span><i style="background:#9FCB3B"></i>Салатовий акцент</span>
     <span><i style="background:repeating-linear-gradient(45deg,#fff 0 4px,#C9471F 4px 6px)"></i>Червоного немає</span>
   </div>
-  <p class="sub">Вихідні рендери каси, взуття, «Все для ніг», релакс-зони й №7 цього шляху — у лівій колонці порівняння вгорі. Тут — сім AI-версій інших видів і два вихідні плани. Нейромережа інтерпретувала деталі товарів та написи.</p>
+  <p class="sub">AI-версії каси, взуття, «Все для ніг», релакс-зони й №7 цього шляху — у лівій колонці порівняння вгорі. Тут — сім AI-версій інших видів і два вихідні плани. Нейромережа інтерпретувала деталі товарів та написи.</p>
   <div class="p2gal" id="p1gal" style="margin-bottom:24px"></div>
   <h3 style="margin:8px 0 12px;font-size:20px">Список замовника по залах</h3>
   <div class="zones" id="zones"></div>
@@ -235,13 +236,18 @@
 
 <footer class="wrap">
   <p>Це концепція, а не робочі креслення. Стіни й прорізи взяті з моделі BD v0.3 без обмірів, розміри меблів орієнтовні, товар умовний, світло без фотометрії.</p>
-  <p>Кайлас · Антоновича, 122 · 19 листопада 2026</p>
+  <p>Кайлас · Антоновича, 122 · візуалізації оновлено 25 листопада 2026</p>
 </footer>
 
 <dialog id="lb" aria-label="Зображення"><button type="button" id="lbClose">Закрити</button><img id="lbImg" alt=""><p id="lbCap"></p></dialog>
 
 <script>
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const AI_RENDERS = new Set(["p1_r5_shoe", "p1_r1", "p1_r5_feet", "p1_relax", "p1_r7", "p2_r5_hero", "p2_r1_hero", "p2_r5_feet", "p2_relax", "p2_r7_hero", "p2_r1_kasa", "p2_r7_fit", "c1_entry", "c1_r1", "c1_r5", "c1_r7", "c2_entry", "c2_r1", "c2_r5", "c2_r7", "v_vault_hero", "v_vault_furn", "v_kora_hero", "v_kora_furn", "v_lab_hero", "v_lab_furn", "v_second_hero", "v_second_furn"]);
+const RENDER_DIMS = {"v_vault_hero": [1586, 992], "p2_r7_fit": [1586, 992], "v_lab_hero": [1597, 985], "p2_relax": [1586, 992], "c2_r1": [1586, 992], "p1_r5_feet": [1536, 1024], "c2_entry": [1586, 992], "v_kora_furn": [2171, 724], "v_second_hero": [1586, 992], "c2_r5": [1586, 992], "p2_r5_hero": [1586, 992], "c2_r7": [1586, 992], "p2_r5_feet": [1586, 992], "c1_r5": [1586, 992], "v_lab_furn": [2171, 724], "p2_r7_hero": [1586, 992], "c1_r7": [1586, 992], "v_vault_furn": [2171, 724], "p1_r7": [1536, 1024], "v_second_furn": [2170, 725], "p1_relax": [1536, 1024], "p1_r1": [1536, 1024], "p2_r1_hero": [1586, 992], "p2_r1_kasa": [1586, 992], "p1_r5_shoe": [1536, 1024], "v_kora_hero": [1586, 992], "c1_entry": [1586, 992], "c1_r1": [1586, 992]};
+const renderDims = f => RENDER_DIMS[f] ? `width="${RENDER_DIMS[f][0]}" height="${RENDER_DIMS[f][1]}"` : "";
+const renderSrc = f => AI_RENDERS.has(f) ? `img/ai-20261125-complete/${f}.jpg` : `img/${f.includes(".")?f:f+".jpg"}`;
 
 const ZONES = [
  {t:"Палітра", k:false, items:["Світле дерево, чорні треки, чорні обідки","Графітові або бежеві стіни","Акцент — салатовий; червоний усюди замінюємо салатовим"]},
@@ -266,7 +272,7 @@ const CMP=[
  {z:"Релакс-зона", ch:"Стенди з окулярами й доглядом графітові, крісла графітові. Книжкова шафа й кавовий стенд дубові.", a:"p1_relax", b:"p2_relax", c:"ai-20261125/p3_relax.jpg"},
  {z:"№7 Одяг", ch:"Стіни й панелі графітові. Графіт поглинає світло, тому тут потрібно більше світильників на стінах.", a:"p1_r7", b:"p2_r7_hero", c:"ai-20261125/p3_r7.jpg"}
 ];
-document.getElementById("cmpRows").innerHTML=CMP.map(r=>`<div class="cmprow"><div class="cmphead"><b>${esc(r.z)}</b><span><b class="chg">Що змінилось у Зведеному:</b> ${esc(r.ch)}</span></div><div class="cmpimgs">${[["Шлях 1 · замовник",r.a],["Шлях 2 · дизайнер",r.b],["Зведений · AI-візуалізація",r.c]].map(([l,f])=>`<figure><button type="button" data-src="img/${f.includes('.')?f:f+'.jpg'}" data-cap="${esc(r.z+' · '+l)}" aria-label="Збільшити: ${esc(r.z+' · '+l)}"><img src="img/${f.includes('.')?f:f+'.jpg'}" alt="${esc(r.z+' · '+l)}" loading="lazy"></button><figcaption>${esc(l)}</figcaption></figure>`).join("")}</div></div>`).join("");
+document.getElementById("cmpRows").innerHTML=CMP.map(r=>`<div class="cmprow"><div class="cmphead"><b>${esc(r.z)}</b><span><b class="chg">Що змінилось у Зведеному:</b> ${esc(r.ch)}</span></div><div class="cmpimgs">${[["Шлях 1 · замовник · AI",r.a],["Шлях 2 · дизайнер · AI",r.b],["Зведений · AI-візуалізація",r.c]].map(([l,f])=>`<figure><button type="button" data-src="${renderSrc(f)}" data-cap="${esc(r.z+' · '+l)}" aria-label="Збільшити: ${esc(r.z+' · '+l)}"><img src="${renderSrc(f)}" alt="${esc(r.z+' · '+l)}" loading="lazy"></button><figcaption>${esc(l)}</figcaption></figure>`).join("")}</div></div>`).join("");
 
 const P1 = [
  {f:"p1_plan", t:"План торгівлі", d:"Розстановка за списком замовника: перший поверх і підвал."},
@@ -289,7 +295,7 @@ const P2 = [
  {f:"p2_r1_kasa", t:"№1 Спортхарчування біля каси", d:"Дві невисокі двосторонні гондоли навпроти каси: банки, батончики, гелі."},
  {f:"p2_r7_fit", t:"№7 Примірочні", d:"Три примірочні з номерами, лава з брусів для тих, хто чекає, дзеркало на стіні."}
 ];
-document.getElementById("p2gal").innerHTML = P2.map(r=>`<figure><button type="button" data-src="img/${r.f}.jpg" data-cap="${esc(r.t+'. '+r.d)}" aria-label="Збільшити: ${esc(r.t)}"><img src="img/${r.f}.jpg" alt="${esc(r.t+'. '+r.d)}" loading="lazy" width="1440" height="900"></button><figcaption><b>${esc(r.t)}.</b> ${esc(r.d)}</figcaption></figure>`).join("");
+document.getElementById("p2gal").innerHTML = P2.map(r=>`<figure><button type="button" data-src="${renderSrc(r.f)}" data-cap="${esc(r.t+'. '+r.d+' · Архів Шлях 2 · AI 25.11')}" aria-label="Збільшити: ${esc(r.t)}"><img src="${renderSrc(r.f)}" alt="${esc(r.t+'. '+r.d+' · Архів Шлях 2 · AI 25.11')}" loading="lazy" width="1586" height="992"></button><figcaption><b>${esc(r.t)}.</b> ${esc(r.d)} <small>Архів Шлях 2 · AI 25.11</small></figcaption></figure>`).join("");
 
 const RENDERS = {
   c1:[{f:"c1_r5",t:"№5 Взуття",d:"Г-стенд, дубова лава, кам’яна гірка, панно з рельєфом."},{f:"c1_r1",t:"№1 Каса",d:"Одна каса біля виходу."},{f:"c1_r7",t:"№7 Одяг",d:"Рейки по стінах, куртки на панно."},{f:"c1_entry",t:"Вхід",d:"Вид від внутрішніх дверей."}],
@@ -303,7 +309,10 @@ const REFS = [
   {f:"ref_clothes",t:"Одяг",d:"Сірі панелі, острівні рейки, треки."},
   {f:"ref_quality",t:"Орієнтир якості",d:"Рівень картинки, до якого прагнемо."}
 ];
-function fig(r){ return `<figure><button type="button" data-src="img/${r.f}.jpg" data-cap="${esc(r.t+'. '+r.d)}" aria-label="Збільшити: ${esc(r.t)}"><img src="img/${r.f}.jpg" alt="${esc(r.t+'. '+r.d)}" loading="lazy"></button><figcaption><b>${esc(r.t)}.</b> ${esc(r.d)}</figcaption></figure>`; }
+function fig(r){
+  const ai=AI_RENDERS.has(r.f), caption=r.t+'. '+r.d+(ai?' · Архів раунду 1 · AI 25.11':'');
+  return `<figure><button type="button" data-src="${renderSrc(r.f)}" data-cap="${esc(caption)}" aria-label="Збільшити: ${esc(r.t)}"><img src="${renderSrc(r.f)}" alt="${esc(caption)}" loading="lazy"></button><figcaption><b>${esc(r.t)}.</b> ${esc(r.d)}${ai?' <small>Архів раунду 1 · AI 25.11</small>':''}</figcaption></figure>`;
+}
 function showGallery(c){
   document.getElementById("gallery").innerHTML = RENDERS[c].map(fig).join("");
   document.querySelectorAll(".switch button").forEach(b => b.setAttribute("aria-pressed", b.dataset.c === c ? "true" : "false"));
@@ -323,9 +332,9 @@ function showVariant(id){
   document.querySelectorAll("#vtabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.v===id?"true":"false"));
   document.getElementById("vpanel").innerHTML=`
    <div class="vhead"><div><div class="kind">${esc(v.kind)}</div><h3>${esc(v.name)}</h3></div><div class="vmeta"><span><strong>${v.score}</strong> / 50</span></div></div>
-   <p class="videa">${esc(v.idea)}</p>
-   <div class="vhero"><button type="button" data-src="img/v_${v.id}_hero.jpg" data-cap="${esc(v.name+'. Зала №5')}" aria-label="Збільшити: ${esc(v.name)}"><img src="img/v_${v.id}_hero.jpg" alt="${esc(v.name)}: зала №5" loading="lazy" width="1280" height="800"></button></div>
-   <div class="vfurn"><button type="button" data-src="img/v_${v.id}_furn.jpg" data-cap="${esc(v.name+'. Меблі')}" aria-label="Збільшити: меблі ${esc(v.name)}"><img src="img/v_${v.id}_furn.jpg" alt="Лінійка меблів ${esc(v.name)}" loading="lazy" width="1280" height="398"></button></div>`;
+   <p class="videa">${esc(v.idea)}</p><p class="sub" style="margin-left:0">Архів раунду 2 · AI-опрацювання 25.11. Збережено окремий образ кожної концепції; дрібні деталі й написи інтерпретовані.${v.id==="second"?" Напис «ВИПРОБУВАНО» — графіка старого ескізу, не підтвердження випробувань кожної моделі.":""}</p>
+   <div class="vhero"><button type="button" data-src="${renderSrc(`v_${v.id}_hero`)}" data-cap="${esc(v.name+'. Зала №5 · архів раунду 2 · AI 25.11')}" aria-label="Збільшити: ${esc(v.name)}"><img src="${renderSrc(`v_${v.id}_hero`)}" alt="${esc(v.name)}: зала №5" loading="lazy" ${renderDims(`v_${v.id}_hero`)}></button></div>
+   <div class="vfurn"><button type="button" data-src="${renderSrc(`v_${v.id}_furn`)}" data-cap="${esc(v.name+'. Меблі · архів раунду 2 · AI 25.11')}" aria-label="Збільшити: меблі ${esc(v.name)}"><img src="${renderSrc(`v_${v.id}_furn`)}" alt="Лінійка меблів ${esc(v.name)}" loading="lazy" ${renderDims(`v_${v.id}_furn`)}></button></div>`;
 }
 document.getElementById("vtabs").innerHTML=VARIANTS.map(v=>`<button type="button" role="tab" data-v="${v.id}" aria-selected="false"><i style="background:${v.color}"></i>${esc(v.name)}</button>`).join("");
 document.querySelectorAll("#vtabs button").forEach(b=>b.addEventListener("click",()=>showVariant(b.dataset.v)));
