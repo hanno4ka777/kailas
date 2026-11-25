@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кайлас · 3D-модель магазину</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#F1EFEA;--sub:#B9B6AE;--bg:#1C1D1F;--panel:rgba(28,29,31,.88);--line:#3A3B3E;--acc:#E0662B}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif;overflow:hidden}
+  #c{position:fixed;inset:0;display:block;width:100%;height:100%}
+  .top{position:fixed;left:12px;top:12px;right:12px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;pointer-events:none}
+  .top>*{pointer-events:auto}
+  .title{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+  .title b{display:block;font-size:15px;font-weight:800}
+  .title span{font-size:12px;color:var(--sub)}
+  .seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px}
+  button{font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:8px;padding:10px 12px;min-height:44px;cursor:pointer;white-space:nowrap}
+  button:hover{background:#2C2D30}
+  button[aria-pressed="true"]{background:var(--acc);color:#fff}
+  .bar{position:fixed;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+  .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .row>*{pointer-events:auto}
+  .rooms{display:flex;gap:4px;overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;max-width:100%}
+  .tools{display:flex;gap:4px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 8px}
+  .tools label{font-size:12px;color:var(--sub);display:flex;align-items:center;gap:8px;padding:0 6px}
+  input[type=range]{width:120px;accent-color:var(--acc)}
+  .zoom{position:fixed;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px}
+  .zoom button{font-size:20px;width:48px}
+  #load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--bg);font-size:14px;color:var(--sub);}
+  #progress{width:220px;height:8px;accent-color:var(--acc)}
+  .note{font-size:11px;color:var(--sub);text-align:center;background:var(--panel);border-radius:8px;padding:6px 10px;border:1px solid var(--line)}
+  .hint{position:fixed;left:50%;top:84px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--sub);transition:opacity .6s;pointer-events:none;text-align:center}
+  button:focus-visible,a:focus-visible,input:focus-visible,canvas:focus-visible{outline:3px solid #B9EB80;outline-offset:3px}
+  button:disabled,input:disabled{opacity:.45;cursor:default}
+  .seg{max-width:100%;overflow-x:auto;touch-action:pan-x pinch-zoom}
+  .rooms{touch-action:pan-x pinch-zoom}
+  .tools{flex-wrap:wrap;justify-content:center;max-width:100%}
+  .top,.bar{max-height:36dvh;overflow:auto}
+  .bar{padding-bottom:env(safe-area-inset-bottom)}
+  .top{padding-top:env(safe-area-inset-top)}
+  #load{z-index:10;padding:24px;text-align:center}
+  [hidden]{display:none!important}
+  #load a,.note a{color:#D3EDB7;text-underline-offset:3px}
+  #retry{border-color:var(--line);background:#35373A}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  #hcut-label{flex-wrap:wrap}
+  .keyhelp{font-size:12px;max-width:560px;line-height:1.6;color:var(--sub)}
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  @media (max-width:640px){.top{left:8px;right:8px;top:8px;gap:6px}.title{padding:8px 10px}.title span{display:none}.seg{padding:2px;gap:2px}.seg button{font-size:12px;padding:8px}.bar{left:8px;right:8px;bottom:8px;gap:5px}.row{gap:5px}.note{font-size:10px}.hint{display:none}input[type=range]{width:90px}.zoom{top:43%;right:8px;transform:translateY(-50%)}.zoom button{min-height:44px;width:40px}.tools{padding:3px}.tools button{font-size:12px;padding:8px}.tools label{font-size:11px}}
+  @media (max-height:500px){.top,.bar{max-height:32dvh}.title span,.hint,.note{display:none}.zoom{top:45%}}
+</style>
+</head>
+<body>
+<canvas id="c" tabindex="0" aria-label="3D-модель магазину Кайлас" aria-describedby="keyboard-help"></canvas>
+<p class="sr" id="keyboard-help">Стрілки — повернути вид. Плюс і мінус — масштаб. Home — повернути вибраний ракурс. Кімнати та режими доступні кнопками.</p>
+<div id="status" class="sr" role="status" aria-live="polite"></div>
+<div class="top">
+  <div class="title"><b><a href="../" style="color:inherit;text-decoration:none">← Кайлас · 3D-модель</a></b><span>Антоновича, 122 · зведений варіант та архів · концепт, не робоче креслення</span></div>
+  <div class="seg" id="concepts" role="group" aria-label="Концепція">
+    <button id="ccP3" data-m="P3" aria-pressed="true">Зведений</button>
+    <button id="ccP1" data-m="P1" aria-pressed="false">Шлях 1 · поверх</button>
+    <button id="ccP1B" data-m="P1B" aria-pressed="false">Шлях 1 · підвал</button>
+    <button id="ccP2" data-m="P2" aria-pressed="false">Шлях 2</button>
+  </div>
+</div>
+<div class="hint" id="hint">Миша: тягнути — обертати, колесо — наближати · Телефон: один палець — обертати, два — наближати й зсувати</div>
+<div class="zoom" aria-label="Масштаб">
+  <button id="zin" aria-label="Наблизити">+</button>
+  <button id="zout" aria-label="Віддалити">−</button>
+  <button id="zreset" aria-label="Скинути вид" style="font-size:13px">⟲</button>
+</div>
+<div class="bar">
+  <div class="row"><div class="rooms" id="rooms" role="group" aria-label="Кімнати"></div></div>
+  <div class="row">
+    <div class="tools">
+      <button id="tIn" aria-pressed="false">Вид зсередини</button>
+      <button id="tCeil" aria-pressed="false">Стеля</button>
+      <label id="hcut-label" for="hcut">Висота стін <input id="hcut" type="range" min="0.9" max="3.0" step="0.05" value="3.0"></label>
+    </div>
+  </div>
+  <div class="row"><div class="seg" id="lighting" role="group" aria-label="Світло">
+    <button data-light="day" aria-pressed="true">Денне</button><button data-light="warm" aria-pressed="false">Тепле</button>
+  </div></div>
+  <div class="row"><div class="note">Концепт до обмірів · товар умовний · <a href="../#compare">Порівняти рендери</a></div></div>
+</div>
+<div id="load" role="status" aria-live="polite">
+  <div id="load-text">Завантажую 3D-перегляд…</div>
+  <progress id="progress" aria-label="Завантаження моделі"></progress>
+  <button id="retry" hidden>Спробувати ще раз</button>
+  <a href="../#compare">Переглянути рендери та опис проєкту</a>
+  <div class="keyhelp">Кімнату можна вибрати кнопками. На 3D-виді працюють стрілки, + / − та Home.</div>
+</div>
+<noscript><p style="position:fixed;inset:20%;z-index:20;background:#1c1d1f;padding:24px">Для 3D потрібен JavaScript. <a href="../#compare" style="color:#d3edb7">Переглянути рендери та опис проєкту</a></p></noscript>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
+</script>
+<script type="module">
+const loadEl=document.getElementById('load');
+const loadText=document.getElementById('load-text');
+const progress=document.getElementById('progress');
+const retry=document.getElementById('retry');
+const status=document.getElementById('status');
+let retryAction=()=>location.reload();
+retry.addEventListener('click',()=>retryAction());
+function showError(message){
+  loadEl.hidden=false;loadText.textContent=message;progress.hidden=true;retry.hidden=false;
+}
+async function start(){
+  const [THREE,{OrbitControls},{GLTFLoader},{MeshoptDecoder},{RoomEnvironment},{Reflector}]=await Promise.all([
+    import('three'),import('three/addons/controls/OrbitControls.js'),
+    import('three/addons/loaders/GLTFLoader.js'),import('three/addons/libs/meshopt_decoder.module.js'),
+    import('three/addons/environments/RoomEnvironment.js'),import('three/addons/objects/Reflector.js')
+  ]);
+  const canvas=document.getElementById('c');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const mobile=()=>innerWidth<=640;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,mobile()?1.25:1.5));
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.localClippingEnabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.shadowMap.autoUpdate=false;
+  renderer.info.autoReset=false;
+  const scene=new THREE.Scene();scene.background=new THREE.Color('#1C1D1F');
+  const camera=new THREE.PerspectiveCamera(50,1,0.05,200);
+  const controls=new OrbitControls(camera,canvas);
+  controls.enableDamping=!reduced.matches;controls.dampingFactor=.08;controls.screenSpacePanning=true;
+  controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
+  const B=(x,y,z=0)=>new THREE.Vector3(x,z,-y);
+  const ROOMS=[
+    {id:'all',name:'Огляд'},
+    {id:'entry',name:'Вхід',c:[3.45,-6.55],look:[1.6,-2.4]},
+    {id:'r1',name:'№1 Каса',c:[3.9,-5.0],look:[1.0,-2.6]},
+    {id:'r5',name:'№5 Взуття',c:[-1.75,-4.6],look:[-3.1,1.4]},
+    {id:'r7',name:'№7 Одяг',c:[-6.58,-1.8],look:[-6.58,2.3]},
+    {id:'relax',name:'Релакс',c:[-1.0,-1.3],look:[-3.2,-4.3]},
+    {id:'r4',name:'№4 Скелелазіння',c:[-0.25,1.0],look:[2.5,0.6]},
+    {id:'r2',name:'№2 Рюкзаки',c:[6.5,-4.8],look:[6.5,-2.0]},
+    {id:'r6',name:'№6 Одяг',c:[-2.0,-9.6],look:[-6.5,-6.0]},
+    {id:'r3',name:'№3 Кемпінг',c:[6.8,-9.9],look:[6.8,-6.5]}
+  ];
+  const CENTER=B(0,-2.5,0);
+  const FILES={P3:'./p3_first_v03.glb',P1:'./p1_first.glb',P1B:'./p1_basement.glb',P2:'./p2_first.glb'};
+  const NAMES={P3:'Зведений',P1:'Шлях 1 · поверх',P1B:'Шлях 1 · підвал',P2:'Шлях 2'};
+  let active=null,activeKey=null,requestedKey='P3',token=0;
+  let mode='orbit',current='all',ceilOn=false,lightMode='day';
+  let frame=0,dirty=true,contextLost=false;
+  const clip=new THREE.Plane(new THREE.Vector3(0,-1,0),3);
+  const cache=new Map();
+  const metadata=new WeakMap();
+  const roomsEl=document.getElementById('rooms');
+  const cutInput=document.getElementById('hcut');
+  const insideButton=document.getElementById('tIn');
+  const ceilingButton=document.getElementById('tCeil');
+  const lightGroup=document.getElementById('lighting');
+  const concepts=document.getElementById('concepts');
+
+  // Procedural studio environment: generated locally, no external HDR image.
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  const roomEnvironment=new RoomEnvironment();
+  const environmentTarget=pmrem.fromScene(roomEnvironment,.04);
+  roomEnvironment.dispose();pmrem.dispose();
+  const hemisphere=new THREE.HemisphereLight(0xfff4e6,0x2a2622,1.6);scene.add(hemisphere);
+  const sun=new THREE.DirectionalLight(0xffffff,1.4);sun.position.set(6,14,8);scene.add(sun);
+  sun.target.position.copy(CENTER);scene.add(sun.target);
+  sun.shadow.mapSize.set(mobile()?1024:2048,mobile()?1024:2048);
+  Object.assign(sun.shadow.camera,{left:-14,right:14,top:14,bottom:-14,near:.5,far:45});
+  sun.shadow.bias=-.00035;sun.shadow.normalBias=.018;
+  const fill=new THREE.DirectionalLight(0xffe6cc,.6);fill.position.set(-8,6,-6);scene.add(fill);
+  const indoor=new THREE.Group();scene.add(indoor);
+  // Soft local fill below the roof; illustrative lighting, not a lux calculation.
+  [[-3,-.6],[1.6,-3.5],[-6.5,.1],[6.6,-3.4],[-4,-7.4],[6.8,-8]].forEach(([x,y])=>{
+    const l=new THREE.PointLight(0xfff1dd,18,8,2);l.position.copy(B(x,y,2.55));indoor.add(l);
+  });
+  function applyLighting(){
+    const improved=activeKey==='P3';
+    scene.environment=improved?environmentTarget.texture:null;
+    scene.environmentIntensity=improved ? .55 : 1;
+    sun.target.position.copy(improved?CENTER:new THREE.Vector3());sun.target.updateMatrixWorld();
+    renderer.shadowMap.enabled=improved;sun.castShadow=improved;indoor.visible=improved;
+    lightGroup.hidden=!improved;
+    if(!improved){
+      hemisphere.color.set(0xfff4e6);hemisphere.groundColor.set(0x2a2622);hemisphere.intensity=1.6;
+      sun.color.set(0xffffff);sun.intensity=1.4;fill.color.set(0xffe6cc);fill.intensity=.6;
+      renderer.toneMappingExposure=1.05;
+    }else{
+      const warm=lightMode==='warm';
+      hemisphere.color.set(warm?0xffecd5:0xf3f5ff);hemisphere.groundColor.set(0x37332f);hemisphere.intensity=.72;
+      sun.color.set(warm?0xffe0b3:0xffffff);sun.intensity=warm?.85:1.05;
+      fill.color.set(warm?0xffd9ae:0xe5edff);fill.intensity=.35;
+      indoor.children.forEach(l=>{l.color.set(warm?0xffd4a5:0xfff3e7);l.intensity=warm?21:18;});
+      renderer.toneMappingExposure=warm?1.0:1.04;
+    }
+    lightGroup.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.light===lightMode)));
+    renderer.shadowMap.needsUpdate=true;requestRender();
+  }
+  lightGroup.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    lightMode=b.dataset.light;applyLighting();status.textContent=`Світло: ${b.textContent}`;
+  }));
+
+  function setFov(){camera.fov=innerWidth<innerHeight?68:50;camera.updateProjectionMatrix();}
+  function configureOrbit(){
+    controls.enableZoom=true;controls.enablePan=true;controls.minDistance=2;controls.maxDistance=60;
+    controls.minPolarAngle=.02;controls.maxPolarAngle=Math.PI*.49;controls.rotateSpeed=1;
+  }
+  function settleControls(){
+    // Flush a drag's remaining damping before a discrete room jump.
+    const damping=controls.enableDamping;controls.enableDamping=false;controls.update();controls.enableDamping=damping;
+  }
+  function setOverview(){
+    configureOrbit();setFov();settleControls();
+    const k=camera.aspect<1?1.9:1;
+    camera.position.copy(CENTER).add(new THREE.Vector3(9*k,15*k,13*k));
+    controls.target.copy(CENTER);controls.update();requestRender();
+  }
+  function markRooms(){roomsEl.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.id===current)));}
+  function applyCut(){
+    cutInput.disabled=mode==='inside';
+    cutInput.title=mode==='inside'?'Усередині показано повну висоту стін':'';
+    const meta=active&&metadata.get(active);
+    if(meta){
+      const planes=mode==='inside'?[]:[clip];
+      meta.materials.forEach(m=>{const changed=m.clippingPlanes.length!==planes.length;m.clippingPlanes=planes;if(changed)m.needsUpdate=true;});
+      if(meta.reflector){const m=meta.reflector.material;const changed=m.clippingPlanes.length!==planes.length;m.clippingPlanes=planes;if(changed)m.needsUpdate=true;}
+    }
+    renderer.shadowMap.needsUpdate=true;requestRender();
+  }
+  function setCeil(on){
+    ceilOn=on;const meta=active&&metadata.get(active);
+    if(meta)meta.ceilings.forEach(m=>m.visible=on);
+    ceilingButton.setAttribute('aria-pressed',String(on));
+    renderer.shadowMap.needsUpdate=true;requestRender();
+  }
+  function goRoom(r,announce=true){
+    if(r.id==='all'){
+      if(mode==='inside'){mode='orbit';insideButton.setAttribute('aria-pressed','false');applyCut();setCeil(false);}
+      current='all';markRooms();setOverview();
+    }else{
+      current=r.id;markRooms();settleControls();
+      const look=B(r.look[0],r.look[1],1.2);
+      if(mode==='inside'){
+        const eye=B(r.c[0],r.c[1],1.6),direction=look.clone().sub(eye).normalize();
+        camera.position.copy(eye);controls.target.copy(eye.clone().add(direction.multiplyScalar(.3)));
+      }else{
+        configureOrbit();
+        const c=B((r.c[0]+r.look[0])/2,(r.c[1]+r.look[1])/2,.8);
+        const off=B(r.c[0],r.c[1],0).sub(B(r.look[0],r.look[1],0)).normalize().multiplyScalar(5);
+        camera.position.copy(c).add(new THREE.Vector3(off.x,7.5,off.z));controls.target.copy(c);
+      }
+      controls.update();requestRender();
+    }
+    if(announce)status.textContent=`${r.name} · ${mode==='inside'?'вид зсередини':'вид згори'}`;
+  }
+  function toggleInside(on){
+    settleControls();mode=on?'inside':'orbit';insideButton.setAttribute('aria-pressed',String(on));setFov();
+    if(on){
+      controls.enableZoom=false;controls.enablePan=false;controls.minDistance=.05;controls.maxDistance=1;
+      controls.minPolarAngle=Math.PI*.1;controls.maxPolarAngle=Math.PI*.85;controls.rotateSpeed=.5;
+      setCeil(true);applyCut();goRoom(ROOMS.find(r=>r.id===current&&r.c)||ROOMS.find(r=>r.id==='r5'));
+    }else{
+      configureOrbit();setCeil(false);applyCut();goRoom(ROOMS.find(r=>r.id===current)||ROOMS[0]);
+    }
+  }
+  ROOMS.forEach(r=>{const b=document.createElement('button');b.textContent=r.name;b.dataset.id=r.id;b.addEventListener('click',()=>goRoom(r));roomsEl.appendChild(b);});
+  insideButton.addEventListener('click',()=>toggleInside(mode!=='inside'));
+  ceilingButton.addEventListener('click',()=>setCeil(!ceilOn));
+  cutInput.addEventListener('input',()=>{clip.constant=Number(cutInput.value);applyCut();});
+  function zoomBy(f){
+    if(mode==='inside'){camera.fov=THREE.MathUtils.clamp(camera.fov*f,25,90);camera.updateProjectionMatrix();requestRender();return;}
+    const v=camera.position.clone().sub(controls.target);
+    v.setLength(THREE.MathUtils.clamp(v.length()*f,controls.minDistance,controls.maxDistance));
+    camera.position.copy(controls.target).add(v);controls.update();requestRender();
+  }
+  function resetView(){setFov();goRoom(ROOMS.find(r=>r.id===current)||ROOMS[0]);}
+  document.getElementById('zin').addEventListener('click',()=>zoomBy(.8));
+  document.getElementById('zout').addEventListener('click',()=>zoomBy(1.25));
+  document.getElementById('zreset').addEventListener('click',resetView);
+  canvas.addEventListener('keydown',event=>{
+    if(event.ctrlKey||event.metaKey||event.altKey)return;
+    const key=event.key;
+    if(['+','=','-','_','Home','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(key))event.preventDefault();else return;
+    if(key==='+'||key==='=')return zoomBy(.8);
+    if(key==='-'||key==='_')return zoomBy(1.25);
+    if(key==='Home')return resetView();
+    const v=camera.position.clone().sub(controls.target),s=new THREE.Spherical().setFromVector3(v),step=.10;
+    if(key==='ArrowLeft')s.theta-=step;if(key==='ArrowRight')s.theta+=step;
+    if(key==='ArrowUp')s.phi-=step;if(key==='ArrowDown')s.phi+=step;
+    s.phi=THREE.MathUtils.clamp(s.phi,controls.minPolarAngle,controls.maxPolarAngle);
+    camera.position.copy(controls.target).add(v.setFromSpherical(s));controls.update();requestRender();
+  });
+
+  function isCeiling(o,root){
+    for(let node=o;node&&node!==root;node=node.parent){
+      if(/^CEILING_\d+(?:[_.]\d+)?$|^FF_HYP_RENDER_CEILING$|^RENDER_CEILING(?:[_.]\d+)?$|^track(?:[_.]\d+)?$/i.test(node.name||''))return true;
+    }
+    return false;
+  }
+  function createMirror(root,meta){
+    const original=root.getObjectByName('R5_mirror');if(!original)return;
+    root.updateMatrixWorld(true);
+    const box=new THREE.Box3().setFromObject(original),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
+    // Verified export: thin X, .53012 m wide on Z, 1.87 m tall, outward normal -X.
+    if(size.x>.04||Math.abs(size.z-.53012)>.03||Math.abs(size.y-1.87)>.03||Math.abs(center.x+.596)>.03){
+      console.warn('Mirror bounds differ from verified export; keeping the original PBR surface.');return;
+    }
+    const mirror=new Reflector(new THREE.PlaneGeometry(size.z,size.y),{
+      color:0x7f7f7f,textureWidth:512,textureHeight:512,clipBias:.003,multisample:0
+    });
+    mirror.name='R5_live_reflection';mirror.position.set(box.min.x-.0003,center.y,center.z);mirror.rotation.y=-Math.PI/2;
+    mirror.material.vertexShader=mirror.material.vertexShader
+      .replace('#include <common>','#include <common>\n#include <clipping_planes_pars_vertex>')
+      .replace('gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );','vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\ngl_Position = projectionMatrix * mvPosition;\n#include <clipping_planes_vertex>');
+    mirror.material.fragmentShader=mirror.material.fragmentShader
+      .replace('#include <logdepthbuf_pars_fragment>','#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>')
+      .replace('void main() {','void main() {\n#include <clipping_planes_fragment>');
+    mirror.material.clipping=true;mirror.material.clippingPlanes=[clip];mirror.material.needsUpdate=true;
+    mirror.visible=false;scene.add(mirror);meta.reflector=mirror;meta.mirrorOriginal=original;
+    meta.mirrorCenter=center;meta.mirrorBounds=box;
+  }
+  function prep(root,key){
+    if(metadata.has(root))return metadata.get(root);
+    const meta={ceilings:[],materials:new Set(),reflector:null};metadata.set(root,meta);
+    const p3=key==='P3';
+    root.traverse(o=>{
+      if(o.isLight){o.visible=false;return;}if(!o.isMesh)return;
+      const ceiling=isCeiling(o,root);if(ceiling)meta.ceilings.push(o);
+      // Keep the roof visible indoors but prevent the exterior key light blacking out the shop.
+      o.castShadow=p3&&!ceiling;o.receiveShadow=p3;
+      const materials=Array.isArray(o.material)?o.material:[o.material];
+      materials.forEach(m=>{
+        if(meta.materials.has(m))return;meta.materials.add(m);
+        if(!p3&&/mirror/i.test(m.name)){m.metalness=0;m.roughness=.15;m.color.set('#8d969b');}
+        m.clippingPlanes=[clip];m.clipShadows=true;
+        if(m.transmission>0){m.transparent=true;m.opacity=.25;m.transmission=0;m.depthWrite=false;}
+      });
+    });
+    if(p3)createMirror(root,meta);return meta;
+  }
+  const frustum=new THREE.Frustum(),projection=new THREE.Matrix4();
+  function updateMirror(){
+    const meta=active&&metadata.get(active);if(!meta||!meta.reflector)return;
+    camera.updateMatrixWorld();projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);frustum.setFromProjectionMatrix(projection);
+    const canReflect=activeKey==='P3'&&mode==='inside'&&current==='r5'&&
+      camera.position.x<meta.mirrorCenter.x-.02&&camera.position.distanceTo(meta.mirrorCenter)<7&&frustum.intersectsBox(meta.mirrorBounds);
+    meta.reflector.visible=canReflect;meta.mirrorOriginal.visible=!canReflect;
+  }
+  function hideActive(){
+    if(!active)return;const meta=metadata.get(active);if(meta?.reflector)meta.reflector.visible=false;
+    scene.remove(active);active=null;
+  }
+  const loader=new GLTFLoader();loader.setMeshoptDecoder(MeshoptDecoder);
+  function showLoading(key){
+    loadEl.hidden=false;loadText.textContent=`Завантажую: ${NAMES[key]}…`;progress.hidden=false;
+    progress.removeAttribute('value');retry.hidden=true;canvas.setAttribute('aria-busy','true');
+  }
+  function activate(root,key,my){
+    if(my!==token)return;
+    hideActive();active=root;activeKey=key;scene.add(root);prep(root,key);
+    setCeil(ceilOn);applyCut();applyLighting();
+    concepts.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===key)));
+    loadEl.hidden=true;canvas.removeAttribute('aria-busy');
+    status.textContent=`${NAMES[key]} завантажено. ${ROOMS.find(r=>r.id===current)?.name||'Огляд'}`;
+    // All models retain the same named room/navigation state. Reset that selected view, not an unrelated overview.
+    goRoom(ROOMS.find(r=>r.id===current)||ROOMS[0],false);requestRender();
+  }
+  function load(key){
+    if(!FILES[key])key='P3';requestedKey=key;const my=++token;
+    retryAction=()=>load(requestedKey);showLoading(key);
+    if(cache.has(key)){activate(cache.get(key),key,my);return;}
+    loader.load(FILES[key],g=>{
+      // Stale completions are safe cache entries; they never change the current UI or scene.
+      if(!cache.has(key))cache.set(key,g.scene);
+      activate(cache.get(key),key,my);
+    },event=>{
+      if(my!==token)return;
+      if(event.lengthComputable&&event.total>0){progress.max=event.total;progress.value=event.loaded;}
+      else progress.removeAttribute('value');
+    },error=>{
+      if(my!==token)return;
+      canvas.removeAttribute('aria-busy');showError('Не вдалося завантажити модель. Спробуйте ще раз або відкрийте рендери.');console.error('Model load failed:',key,error);
+    });
+  }
+  concepts.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    load(b.dataset.m);try{history.replaceState(null,'','#'+b.dataset.m.toLowerCase());}catch{}
+  }));
+
+  // Draw only while the camera changes. Static shadows are rebuilt only after a model, cut, roof or lighting change.
+  const qa=new URLSearchParams(location.search).has('qa');
+  let qaPanel=null,qaFrames=0,qaTotal=0,qaMax=0;
+  if(qa){qaPanel=document.createElement('output');qaPanel.style.cssText='position:fixed;left:12px;top:44%;z-index:4;background:#151719df;color:#d9efb8;padding:8px;font:11px monospace;pointer-events:none;white-space:pre';qaPanel.setAttribute('aria-label','Діагностика перегляду');document.body.appendChild(qaPanel);}
+  function requestRender(){dirty=true;if(!document.hidden&&!contextLost&&!frame)frame=requestAnimationFrame(renderFrame);}
+  function renderFrame(){
+    frame=0;if(document.hidden||contextLost)return;
+    const changed=controls.update();
+    if(dirty||changed){
+      dirty=false;const started=performance.now();updateMirror();renderer.info.reset();renderer.render(scene,camera);
+      if(qaPanel){
+        const ms=performance.now()-started;qaFrames++;qaTotal+=ms;qaMax=Math.max(qaMax,ms);
+        qaPanel.textContent=`${activeKey||'loading'} · ${mode} · ${current}\nrender ${ms.toFixed(1)} ms · mean ${(qaTotal/qaFrames).toFixed(1)} · max ${qaMax.toFixed(1)}\ndraws ${renderer.info.render.calls} · triangles ${renderer.info.render.triangles.toLocaleString('en')}\nDPR ${renderer.getPixelRatio()} · mirror ${!!(active&&metadata.get(active)?.reflector?.visible)}`;
+      }
+    }
+    if(changed)requestRender();
+  }
+  controls.addEventListener('change',requestRender);
+  reduced.addEventListener('change',()=>{controls.enableDamping=!reduced.matches;requestRender();});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){if(frame)cancelAnimationFrame(frame);frame=0;}else requestRender();
+  });
+  canvas.addEventListener('webglcontextlost',event=>{
+    event.preventDefault();contextLost=true;if(frame)cancelAnimationFrame(frame);frame=0;
+    retryAction=()=>location.reload();showError('3D-перегляд призупинено пристроєм. Оновіть сторінку або відкрийте рендери.');
+  });
+  canvas.addEventListener('webglcontextrestored',()=>location.reload());
+  function resize(){
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1,mobile()?1.25:1.5));
+    renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;
+    // Keep the user's chosen inside field of view during orientation changes.
+    camera.updateProjectionMatrix();requestRender();
+  }
+  addEventListener('resize',resize);resize();setOverview();markRooms();
+  load(({'#p2':'P2','#p1b':'P1B','#p1':'P1'})[location.hash.toLowerCase()]||'P3');
+  setTimeout(()=>{document.getElementById('hint').hidden=true;},6000);
+}
+start().catch(error=>{
+  showError('Не вдалося відкрити 3D-перегляд. Оновіть сторінку або перегляньте рендери.');
+  console.error('3D viewer startup failed:',error);
+});
+</script>
+</body>
+</html>
